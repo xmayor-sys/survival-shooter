@@ -2703,3 +2703,40 @@ function handleGamepadInput() {
 
     game.gamepad.lastButtonStates = currentButtonStates;
 }
+// --- VERIFICADOR DE CONEXIÓN AL SERVIDOR ---
+function comprobarServidorPhoton() {
+    if (typeof Photon === 'undefined') {
+        alert("❌ ERROR: La librería Photon no ha cargado. Revisa tu internet o el index.html.");
+        return;
+    }
+
+    const Config = {
+        AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66",
+        AppVersion: "1.0",
+        Region: "eu"
+    };
+
+    const client = new Photon.LoadBalancing.LoadBalancingClient(
+        Photon.ConnectionProtocol.Wss, 
+        Config.AppId, 
+        Config.AppVersion
+    );
+
+    // Si el servidor responde, saltará esta alerta:
+    client.onStateChange = function (state) {
+        if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
+            alert("✅ ¡SERVIDOR FUNCIONANDO! Conectado a Photon correctamente.");
+            console.log("Servidor listo.");
+        }
+    };
+
+    // Si el servidor está caído o tu ID falla:
+    client.onError = function (errorCode, errorMsg) {
+        alert("⚠️ FALLO DE SERVIDOR: " + errorMsg);
+    };
+
+    client.connectToRegionMaster(Config.Region);
+}
+
+// Ejecutar cuando el juego cargue
+window.addEventListener('load', comprobarServidorPhoton);
