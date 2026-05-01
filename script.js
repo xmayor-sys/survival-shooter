@@ -2704,64 +2704,19 @@ function handleGamepadInput() {
     game.gamepad.lastButtonStates = currentButtonStates;
 }
 // ==========================================
-// CONFIGURACIÓN OFICIAL DE PHOTON
+// CONFIGURACIÓN AUTOMÁTICA DE PHOTON
 // ==========================================
 const appId = "f0e6c485-6d70-4298-b182-a539a6f52b66";
 const client = new Photon.LoadBalancing.LoadBalancingClient(Photon.ConnectionProtocol.Wss, appId, "1.0");
 
-/**
- * Función para conectar/desconectar manualmente
- */
-function toggleMultiplayer() {
-    const btn = document.getElementById("toggle-connection");
-    const statusLabel = document.getElementById("connection-status");
-
-    // En Photon oficial: 5 = ConnectedToMaster
-    // Si no estamos en estado 5, intentamos conectar
-    if (client.state !== 5) { 
-        console.log("Iniciando conexión manual...");
-        if (statusLabel) {
-            statusLabel.innerText = "ESPERANDO...";
-            statusLabel.style.color = "orange";
-        }
-        client.connectToRegionMaster("eu");
-    } else {
-        console.log("Desconectando del servidor...");
-        client.disconnect();
-        
-        // Reset visual inmediato
-        if (statusLabel) {
-            statusLabel.innerText = "OFFLINE";
-            statusLabel.style.color = "#ff4444";
-        }
-        if (btn) btn.innerText = "CONECTAR";
-    }
-}
-
-/**
- * Gestión de estados del servidor
- */
+// Esto se ejecuta solo cada vez que el servidor cambia de estado
 client.onStateChange = function (state) {
-    const statusLabel = document.getElementById("connection-status");
-    const btn = document.getElementById("toggle-connection");
-
     console.log("Estado de Photon:", state);
-
-    // Si conecta con éxito
+    
     if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
         console.log("✅ ¡Conectado al Master oficial!");
-        if (statusLabel) {
-            statusLabel.innerText = "ONLINE";
-            statusLabel.style.color = "#00ff00";
-        }
-        if (btn) btn.innerText = "DESCONECTAR";
-    } 
-    // Si se desconecta (por el botón, por error de red o al inicio)
-    else if (state === 0 || state === 8 || state === 10 || state === 11) { 
-        if (statusLabel) {
-            statusLabel.innerText = "OFFLINE";
-            statusLabel.style.color = "#ff4444";
-        }
-        if (btn) btn.innerText = "CONECTAR";
     }
 };
+
+// CONEXIÓN AUTOMÁTICA (Sin botones)
+client.connectToRegionMaster("eu");
