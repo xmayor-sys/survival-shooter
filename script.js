@@ -2703,40 +2703,48 @@ function handleGamepadInput() {
 
     game.gamepad.lastButtonStates = currentButtonStates;
 }
-// --- VERIFICADOR DE CONEXIÓN AL SERVIDOR ---
+// --- VERIFICACIÓN FINAL DEL SERVIDOR ---
 function comprobarServidorPhoton() {
+    // 1. Verificamos si la librería existe en el sistema
     if (typeof Photon === 'undefined') {
-        alert("❌ ERROR: La librería Photon no ha cargado. Revisa tu internet o el index.html.");
+        console.error("La librería Photon no se detecta en el JS.");
         return;
     }
 
+    // 2. Configuración (Asegúrate de que este AppId es el tuyo)
     const Config = {
-        AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66",
+        AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66", 
         AppVersion: "1.0",
         Region: "eu"
     };
 
+    // 3. IMPORTANTE: Usamos Wss para que GitHub no bloquee la conexión
     const client = new Photon.LoadBalancing.LoadBalancingClient(
         Photon.ConnectionProtocol.Wss, 
         Config.AppId, 
-        Config.AppVersion
+        Config.ConfigAppVersion || Config.AppVersion
     );
 
-    // Si el servidor responde, saltará esta alerta:
+    // 4. Avisos en pantalla
     client.onStateChange = function (state) {
+        console.log("Estado cambiado a:", state);
         if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
-            alert("✅ ¡SERVIDOR FUNCIONANDO! Conectado a Photon correctamente.");
-            console.log("Servidor listo.");
+            alert("✅ ¡CONECTADO! El servidor de Photon está funcionando.");
         }
     };
 
-    // Si el servidor está caído o tu ID falla:
+    // 5. Si te desconectas, este mensaje te dirá POR QUÉ
     client.onError = function (errorCode, errorMsg) {
-        alert("⚠️ FALLO DE SERVIDOR: " + errorMsg);
+        alert("⚠️ DESCONECTADO (Error " + errorCode + "): " + errorMsg);
+        console.error("Detalles del error:", errorMsg);
     };
 
+    // Intentar conectar
     client.connectToRegionMaster(Config.Region);
 }
 
-// Ejecutar cuando el juego cargue
-window.addEventListener('load', comprobarServidorPhoton);
+// Arrancamos la prueba
+window.addEventListener('load', function() {
+    // Esperamos 1 segundo extra para que todo el HTML se asiente
+    setTimeout(comprobarServidorPhoton, 1000);
+});
