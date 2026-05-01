@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="multiplayer-control" style="position: fixed; top: 10px; left: 10px; z-index: 9999; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 8px; color: white; font-family: sans-serif; border: 1px solid #555;">
+    <div style="margin-bottom: 5px;">
+        Estado: <span id="connection-status" style="font-weight: bold; color: #ff4444;">OFFLINE</span>
+    </div>
+    <button id="toggle-connection" onclick="toggleMultiplayer()" style="cursor: pointer; background: #444; color: white; border: 1px solid #777; padding: 5px 10px; border-radius: 4px;">
+        CONECTAR
+    </button>
+</div>
 <div id="fpsCounter" style="position: fixed; top: 10px; right: 10px; color: lime; font-family: 'Courier New', Courier, monospace; font-weight: bold; background: rgba(0,0,0,0.7); padding: 8px; border: 1px solid #444; border-radius: 5px; z-index: 1000; min-width: 70px; text-align: center;">
 FPS: 0
 </div>
