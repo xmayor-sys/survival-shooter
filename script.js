@@ -2705,14 +2705,16 @@ function handleGamepadInput() {
 }
 // --- VERIFICACIÓN FINAL DEL SERVIDOR CON REINTENTO ---
 function comprobarServidorPhoton() {
-    // 1. Si la librería no está lista, esperamos 1 segundo y reintentamos
+    // 1. Si la librería no está lista, imprimimos en consola y reintentamos en 1 segundo
     if (typeof Photon === 'undefined') {
-        console.log("Esperando a la librería Photon...");
+        console.log("Reintentando encontrar librería Photon...");
         setTimeout(comprobarServidorPhoton, 1000); 
         return;
     }
 
-    // 2. Si llegamos aquí, la librería ya existe
+    // 2. Si llegamos aquí, la librería ya existe (¡Victoria!)
+    console.log("¡Librería detectada! Conectando al servidor...");
+
     const Config = {
         AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66", 
         AppVersion: "1.0",
@@ -2725,7 +2727,7 @@ function comprobarServidorPhoton() {
         Config.AppVersion
     );
 
-    // 3. Alerta de éxito
+    // 3. Alerta de éxito cuando conecte
     client.onStateChange = function (state) {
         if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
             alert("✅ ¡CONECTADO! El servidor de Photon está funcionando.");
@@ -2740,7 +2742,7 @@ function comprobarServidorPhoton() {
     client.connectToRegionMaster(Config.Region);
 }
 
-// Lanzar el primer intento 3 segundos después de cargar la página
+// Lanzar el primer intento 3 segundos después de cargar la página para dar tiempo a las imágenes
 window.addEventListener('load', function() {
     setTimeout(comprobarServidorPhoton, 3000);
 });
