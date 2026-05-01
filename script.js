@@ -2703,51 +2703,64 @@ function handleGamepadInput() {
 
     game.gamepad.lastButtonStates = currentButtonStates;
 }
-// Este es el código único que necesitas en script.js para usar la librería oficial
+// ==========================================
+// CONFIGURACIÓN OFICIAL DE PHOTON
+// ==========================================
 const appId = "f0e6c485-6d70-4298-b182-a539a6f52b66";
 const client = new Photon.LoadBalancing.LoadBalancingClient(Photon.ConnectionProtocol.Wss, appId, "1.0");
 
-client.onStateChange = function (state) {
-    console.log("Estado de Photon:", state);
-    if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
-        console.log("✅ ¡Conectado al Master oficial!");
-    }
-};
-// Función para conectar/desconectar manualmente
+/**
+ * Función para conectar/desconectar manualmente desde el botón
+ */
 function toggleMultiplayer() {
     const btn = document.getElementById("toggle-connection");
     const statusLabel = document.getElementById("connection-status");
 
-    if (!client.isConnected()) {
-        // Si no está conectado, intentamos conectar
+    // En la librería oficial usamos client.state (5 es el código para ConnectedToMaster)
+    if (client.state !== 5) { 
         console.log("Iniciando conexión manual...");
+        if (statusLabel) {
+            statusLabel.innerText = "CONECTANDO...";
+            statusLabel.style.color = "orange";
+        }
         client.connectToRegionMaster("eu");
-        btn.innerText = "DESCONECTAR";
     } else {
-        // Si ya está conectado, cerramos la conexión
         console.log("Desconectando del servidor...");
         client.disconnect();
-        // Actualizamos visualmente de inmediato
-        statusLabel.innerText = "OFFLINE";
-        statusLabel.style.color = "#ff4444";
-        btn.innerText = "CONECTAR";
+        
+        // Actualizamos visualmente de inmediato para que el usuario sienta el click
+        if (statusLabel) {
+            statusLabel.innerText = "OFFLINE";
+            statusLabel.style.color = "#ff4444";
+        }
+        if (btn) btn.innerText = "CONECTAR";
     }
 }
 
-// Actualización automática del texto según lo que diga el servidor
+/**
+ * Actualización automática del texto según la respuesta del servidor
+ */
 client.onStateChange = function (state) {
     const statusLabel = document.getElementById("connection-status");
     const btn = document.getElementById("toggle-connection");
 
+    console.log("Estado de Photon:", state);
+
+    // Si el estado es 5 (ConnectedToMaster)
     if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
-        statusLabel.innerText = "ONLINE";
-        statusLabel.style.color = "#00ff00";
-        btn.innerText = "DESCONECTAR";
+        console.log("✅ ¡Conectado al Master oficial!");
+        if (statusLabel) {
+            statusLabel.innerText = "ONLINE";
+            statusLabel.style.color = "#00ff00";
+        }
+        if (btn) btn.innerText = "DESCONECTAR";
     } 
-    // Si el estado cambia a desconectado por error de red o timeout
-    else if (state === 0 || state === 8) { 
-        statusLabel.innerText = "OFFLINE";
-        statusLabel.style.color = "#ff4444";
-        btn.innerText = "CONECTAR";
+    // Si el estado es 0 (PeerCreated), 8 (Disconnecting) o similar, lo ponemos como OFFLINE
+    else if (state === 0 || state === 8 || state === 10 || state === 11) { 
+        if (statusLabel) {
+            statusLabel.innerText = "OFFLINE";
+            statusLabel.style.color = "#ff4444";
+        }
+        if (btn) btn.innerText = "CONECTAR";
     }
 };
