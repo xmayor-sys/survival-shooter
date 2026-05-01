@@ -2703,46 +2703,16 @@ function handleGamepadInput() {
 
     game.gamepad.lastButtonStates = currentButtonStates;
 }
-// --- VERIFICACIÓN FINAL DEL SERVIDOR CON REINTENTO ---
-function comprobarServidorPhoton() {
-    // 1. Si la librería no está lista, imprimimos en consola y reintentamos en 1 segundo
-    if (typeof Photon === 'undefined') {
-        console.log("Reintentando encontrar librería Photon...");
-        setTimeout(comprobarServidorPhoton, 1000); 
-        return;
+// Este es el código único que necesitas en script.js para usar la librería oficial
+const appId = "f0e6c485-6d70-4298-b182-a539a6f52b66";
+const client = new Photon.LoadBalancing.LoadBalancingClient(Photon.ConnectionProtocol.Wss, appId, "1.0");
+
+client.onStateChange = function (state) {
+    console.log("Estado de Photon:", state);
+    if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
+        console.log("✅ ¡Conectado al Master oficial!");
     }
+};
 
-    // 2. Si llegamos aquí, la librería ya existe (¡Victoria!)
-    console.log("¡Librería detectada! Conectando al servidor...");
-
-    const Config = {
-        AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66", 
-        AppVersion: "1.0",
-        Region: "eu"
-    };
-
-    const client = new Photon.LoadBalancing.LoadBalancingClient(
-        Photon.ConnectionProtocol.Wss, 
-        Config.AppId, 
-        Config.AppVersion
-    );
-
-    // 3. Alerta de éxito cuando conecte
-    client.onStateChange = function (state) {
-        if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
-            alert("✅ ¡CONECTADO! El servidor de Photon está funcionando.");
-        }
-    };
-
-    // 4. Alerta de fallo (nos dirá el número de error)
-    client.onError = function (errorCode, errorMsg) {
-        alert("⚠️ DESCONECTADO (Error " + errorCode + "): " + errorMsg);
-    };
-
-    client.connectToRegionMaster(Config.Region);
-}
-
-// Lanzar el primer intento 3 segundos después de cargar la página para dar tiempo a las imágenes
-window.addEventListener('load', function() {
-    setTimeout(comprobarServidorPhoton, 3000);
-});
+// Conectar al servidor de Europa
+client.connectToRegionMaster("eu");
