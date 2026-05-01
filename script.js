@@ -1,16 +1,20 @@
-// CONFIGURACIÓN DE PHOTON
+// --- INICIO DE CONFIGURACIÓN MULTIPLAYER ---
 const SceneOptions = {
     AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66",
     AppVersion: "1.0",
     Region: "eu"
 };
 
-const photonClient = new Photon.LoadBalancing.LoadBalancingClient(Photon.ConnectionProtocol.Wss, SceneOptions.AppId, SceneOptions.AppVersion);
+const photonClient = new Photon.LoadBalancing.LoadBalancingClient(
+    Photon.ConnectionProtocol.Wss, 
+    SceneOptions.AppId, 
+    SceneOptions.AppVersion
+);
 
-// Lógica de conexión
+// Funciones de estado de la conexión
 function iniciarMultiplayer() {
     if (!photonClient.isInLobby()) {
-        console.log("Conectando a Photon...");
+        console.log("Intentando conectar con Photon...");
         photonClient.connectToRegionMaster(SceneOptions.Region);
     }
 }
@@ -18,13 +22,19 @@ function iniciarMultiplayer() {
 photonClient.onStateChange = function (state) {
     const LBC = Photon.LoadBalancing.LoadBalancingClient;
     if (state === LBC.State.ConnectedToMaster) {
+        console.log("¡Conexión establecida! Buscando partida...");
         photonClient.joinRandomOrCreateRoom();
     }
 };
 
 photonClient.onJoinedRoom = function () {
-    console.log("¡Conectado al multijugador!");
+    console.log("¡ÉXITO: Ya estás en la sala multijugador!");
 };
+
+photonClient.onError = function (errorCode, errorMsg) {
+    console.error("Error de Photon:", errorCode, errorMsg);
+};
+// --- FIN DE CONFIGURACIÓN MULTIPLAYER ---
 let lastCalledTime;
 let fps;
 const fpsDisplay = document.getElementById('fpsCounter');
