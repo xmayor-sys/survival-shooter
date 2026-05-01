@@ -2703,48 +2703,44 @@ function handleGamepadInput() {
 
     game.gamepad.lastButtonStates = currentButtonStates;
 }
-// --- VERIFICACIÓN FINAL DEL SERVIDOR ---
+// --- VERIFICACIÓN FINAL DEL SERVIDOR CON REINTENTO ---
 function comprobarServidorPhoton() {
-    // 1. Verificamos si la librería existe en el sistema
+    // 1. Si la librería no está lista, esperamos 1 segundo y reintentamos
     if (typeof Photon === 'undefined') {
-        console.error("La librería Photon no se detecta en el JS.");
+        console.log("Esperando a la librería Photon...");
+        setTimeout(comprobarServidorPhoton, 1000); 
         return;
     }
 
-    // 2. Configuración (Asegúrate de que este AppId es el tuyo)
+    // 2. Si llegamos aquí, la librería ya existe
     const Config = {
         AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66", 
         AppVersion: "1.0",
         Region: "eu"
     };
 
-    // 3. IMPORTANTE: Usamos Wss para que GitHub no bloquee la conexión
     const client = new Photon.LoadBalancing.LoadBalancingClient(
         Photon.ConnectionProtocol.Wss, 
         Config.AppId, 
-        Config.ConfigAppVersion || Config.AppVersion
+        Config.AppVersion
     );
 
-    // 4. Avisos en pantalla
+    // 3. Alerta de éxito
     client.onStateChange = function (state) {
-        console.log("Estado cambiado a:", state);
         if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
             alert("✅ ¡CONECTADO! El servidor de Photon está funcionando.");
         }
     };
 
-    // 5. Si te desconectas, este mensaje te dirá POR QUÉ
+    // 4. Alerta de fallo (nos dirá el número de error)
     client.onError = function (errorCode, errorMsg) {
         alert("⚠️ DESCONECTADO (Error " + errorCode + "): " + errorMsg);
-        console.error("Detalles del error:", errorMsg);
     };
 
-    // Intentar conectar
     client.connectToRegionMaster(Config.Region);
 }
 
-// Arrancamos la prueba
+// Lanzar el primer intento 3 segundos después de cargar la página
 window.addEventListener('load', function() {
-    // Esperamos 1 segundo extra para que todo el HTML se asiente
-    setTimeout(comprobarServidorPhoton, 1000);
+    setTimeout(comprobarServidorPhoton, 3000);
 });
