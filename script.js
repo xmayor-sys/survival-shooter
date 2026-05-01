@@ -100,7 +100,6 @@ const enemiesToSpawnDisplay = document.getElementById('enemies-to-spawn');
 const rebirthButton = document.getElementById('rebirth-button');
 const rebirthCostDisplay = document.getElementById('rebirth-cost');
 const bossHealthContainer = document.getElementById('boss-health-container');
-const bossHealthFill = document.getElementById('boss-health-fill');
 const bossName = document.getElementById('boss-name');
 const coinsDisplay = document.getElementById('coins-display');
 const timeValue = document.getElementById('time-value');
