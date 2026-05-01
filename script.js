@@ -2710,17 +2710,18 @@ const appId = "f0e6c485-6d70-4298-b182-a539a6f52b66";
 const client = new Photon.LoadBalancing.LoadBalancingClient(Photon.ConnectionProtocol.Wss, appId, "1.0");
 
 /**
- * Función para conectar/desconectar manualmente desde el botón
+ * Función para conectar/desconectar manualmente
  */
 function toggleMultiplayer() {
     const btn = document.getElementById("toggle-connection");
     const statusLabel = document.getElementById("connection-status");
 
-    // En la librería oficial usamos client.state (5 es el código para ConnectedToMaster)
+    // En Photon oficial: 5 = ConnectedToMaster
+    // Si no estamos en estado 5, intentamos conectar
     if (client.state !== 5) { 
         console.log("Iniciando conexión manual...");
         if (statusLabel) {
-            statusLabel.innerText = "CONECTANDO...";
+            statusLabel.innerText = "ESPERANDO...";
             statusLabel.style.color = "orange";
         }
         client.connectToRegionMaster("eu");
@@ -2728,7 +2729,7 @@ function toggleMultiplayer() {
         console.log("Desconectando del servidor...");
         client.disconnect();
         
-        // Actualizamos visualmente de inmediato para que el usuario sienta el click
+        // Reset visual inmediato
         if (statusLabel) {
             statusLabel.innerText = "OFFLINE";
             statusLabel.style.color = "#ff4444";
@@ -2738,7 +2739,7 @@ function toggleMultiplayer() {
 }
 
 /**
- * Actualización automática del texto según la respuesta del servidor
+ * Gestión de estados del servidor
  */
 client.onStateChange = function (state) {
     const statusLabel = document.getElementById("connection-status");
@@ -2746,7 +2747,7 @@ client.onStateChange = function (state) {
 
     console.log("Estado de Photon:", state);
 
-    // Si el estado es 5 (ConnectedToMaster)
+    // Si conecta con éxito
     if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
         console.log("✅ ¡Conectado al Master oficial!");
         if (statusLabel) {
@@ -2755,7 +2756,7 @@ client.onStateChange = function (state) {
         }
         if (btn) btn.innerText = "DESCONECTAR";
     } 
-    // Si el estado es 0 (PeerCreated), 8 (Disconnecting) o similar, lo ponemos como OFFLINE
+    // Si se desconecta (por el botón, por error de red o al inicio)
     else if (state === 0 || state === 8 || state === 10 || state === 11) { 
         if (statusLabel) {
             statusLabel.innerText = "OFFLINE";
