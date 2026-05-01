@@ -1,3 +1,30 @@
+// CONFIGURACIÓN DE PHOTON
+const SceneOptions = {
+    AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66",
+    AppVersion: "1.0",
+    Region: "eu"
+};
+
+const photonClient = new Photon.LoadBalancing.LoadBalancingClient(Photon.ConnectionProtocol.Wss, SceneOptions.AppId, SceneOptions.AppVersion);
+
+// Lógica de conexión
+function iniciarMultiplayer() {
+    if (!photonClient.isInLobby()) {
+        console.log("Conectando a Photon...");
+        photonClient.connectToRegionMaster(SceneOptions.Region);
+    }
+}
+
+photonClient.onStateChange = function (state) {
+    const LBC = Photon.LoadBalancing.LoadBalancingClient;
+    if (state === LBC.State.ConnectedToMaster) {
+        photonClient.joinRandomOrCreateRoom();
+    }
+};
+
+photonClient.onJoinedRoom = function () {
+    console.log("¡Conectado al multijugador!");
+};
 let lastCalledTime;
 let fps;
 const fpsDisplay = document.getElementById('fpsCounter');
