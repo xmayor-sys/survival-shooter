@@ -2713,6 +2713,41 @@ client.onStateChange = function (state) {
         console.log("✅ ¡Conectado al Master oficial!");
     }
 };
+// Función para conectar/desconectar manualmente
+function toggleMultiplayer() {
+    const btn = document.getElementById("toggle-connection");
+    const statusLabel = document.getElementById("connection-status");
 
-// Conectar al servidor de Europa
-client.connectToRegionMaster("eu");
+    if (!client.isConnected()) {
+        // Si no está conectado, intentamos conectar
+        console.log("Iniciando conexión manual...");
+        client.connectToRegionMaster("eu");
+        btn.innerText = "DESCONECTAR";
+    } else {
+        // Si ya está conectado, cerramos la conexión
+        console.log("Desconectando del servidor...");
+        client.disconnect();
+        // Actualizamos visualmente de inmediato
+        statusLabel.innerText = "OFFLINE";
+        statusLabel.style.color = "#ff4444";
+        btn.innerText = "CONECTAR";
+    }
+}
+
+// Actualización automática del texto según lo que diga el servidor
+client.onStateChange = function (state) {
+    const statusLabel = document.getElementById("connection-status");
+    const btn = document.getElementById("toggle-connection");
+
+    if (state === Photon.LoadBalancing.LoadBalancingClient.State.ConnectedToMaster) {
+        statusLabel.innerText = "ONLINE";
+        statusLabel.style.color = "#00ff00";
+        btn.innerText = "DESCONECTAR";
+    } 
+    // Si el estado cambia a desconectado por error de red o timeout
+    else if (state === 0 || state === 8) { 
+        statusLabel.innerText = "OFFLINE";
+        statusLabel.style.color = "#ff4444";
+        btn.innerText = "CONECTAR";
+    }
+};
