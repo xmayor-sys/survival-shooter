@@ -2730,3 +2730,4 @@ function handleGamepadInput() {
 
     game.gamepad.lastButtonStates = currentButtonStates;
 }
+iniciarMultiplayer();
