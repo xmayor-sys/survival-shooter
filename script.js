@@ -5,7 +5,7 @@ const SceneOptions = {
     Region: "eu"
 };
 
-const photonClientTEST = = new Photon.LoadBalancing.LoadBalancingClient(
+const photonClientTEST= new Photon.LoadBalancing.LoadBalancingClient(
     Photon.ConnectionProtocol.Wss, 
     SceneOptions.AppId, 
     SceneOptions.AppVersion
