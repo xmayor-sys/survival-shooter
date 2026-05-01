@@ -1,40 +1,3 @@
-// --- INICIO DE CONFIGURACIÓN MULTIPLAYER ---
-const SceneOptions = {
-    AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66",
-    AppVersion: "1.0",
-    Region: "eu"
-};
-
-const photonClientTEST= new Photon.LoadBalancing.LoadBalancingClient(
-    Photon.ConnectionProtocol.Wss, 
-    SceneOptions.AppId, 
-    SceneOptions.AppVersion
-);
-
-// Funciones de estado de la conexión
-function iniciarMultiplayer() {
-    if (!photonClient.isInLobby()) {
-        console.log("Intentando conectar con Photon...");
-        photonClient.connectToRegionMaster(SceneOptions.Region);
-    }
-}
-
-photonClient.onStateChange = function (state) {
-    const LBC = Photon.LoadBalancing.LoadBalancingClient;
-    if (state === LBC.State.ConnectedToMaster) {
-        console.log("¡Conexión establecida! Buscando partida...");
-        photonClient.joinRandomOrCreateRoom();
-    }
-};
-
-photonClient.onJoinedRoom = function () {
-    console.log("¡ÉXITO: Ya estás en la sala multijugador!");
-};
-
-photonClient.onError = function (errorCode, errorMsg) {
-    console.error("Error de Photon:", errorCode, errorMsg);
-};
-// --- FIN DE CONFIGURACIÓN MULTIPLAYER ---
 let lastCalledTime;
 let fps;
 const fpsDisplay = document.getElementById('fpsCounter');
@@ -2740,3 +2703,40 @@ function handleGamepadInput() {
     game.gamepad.lastButtonStates = currentButtonStates;
 }
 iniciarMultiplayer();
+// --- INICIO DE CONFIGURACIÓN MULTIPLAYER ---
+const SceneOptions = {
+    AppId: "f0e6c485-6d70-4298-b182-a539a6f52b66",
+    AppVersion: "1.0",
+    Region: "eu"
+};
+
+const photonClientTEST= new Photon.LoadBalancing.LoadBalancingClient(
+    Photon.ConnectionProtocol.Wss, 
+    SceneOptions.AppId, 
+    SceneOptions.AppVersion
+);
+
+// Funciones de estado de la conexión
+function iniciarMultiplayer() {
+    if (!photonClient.isInLobby()) {
+        console.log("Intentando conectar con Photon...");
+        photonClient.connectToRegionMaster(SceneOptions.Region);
+    }
+}
+
+photonClient.onStateChange = function (state) {
+    const LBC = Photon.LoadBalancing.LoadBalancingClient;
+    if (state === LBC.State.ConnectedToMaster) {
+        console.log("¡Conexión establecida! Buscando partida...");
+        photonClient.joinRandomOrCreateRoom();
+    }
+};
+
+photonClient.onJoinedRoom = function () {
+    console.log("¡ÉXITO: Ya estás en la sala multijugador!");
+};
+
+photonClient.onError = function (errorCode, errorMsg) {
+    console.error("Error de Photon:", errorCode, errorMsg);
+};
+// --- FIN DE CONFIGURACIÓN MULTIPLAYER ---
