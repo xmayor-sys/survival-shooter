@@ -2790,3 +2790,62 @@ function toggleOnlineMenu(show) {
     document.getElementById("main-menu").style.display = show ? "none" : "flex";
     document.getElementById("online-lobby-menu").style.display = show ? "flex" : "none";
 }
+// --- SISTEMA DE TIENDA SEGURO ---
+function toggleShop(show) {
+    // Si la partida no ha empezado, no hacemos nada para evitar errores
+    if (typeof game === 'undefined' || !game.player) return;
+
+    const shopMenu = document.getElementById("shop-menu");
+    if (show) {
+        // Actualizamos las monedas en el texto de la tienda
+        const coinsText = document.getElementById("shop-coins-display");
+        if (coinsText) coinsText.innerText = game.player.coins;
+        
+        shopMenu.style.display = "flex";
+        renderShop(); // Dibujamos los objetos
+    } else {
+        shopMenu.style.display = "none";
+    }
+}
+
+function renderShop() {
+    const container = document.getElementById("shop-inventory");
+    if (!container) return;
+    container.innerHTML = ""; // Limpiamos la tienda anterior
+
+    // Lista de cosas que vendes (puedes añadir más aquí)
+    const items = [
+        { name: "Botiquín", price: 50, type: "health" },
+        { name: "Bomba", price: 100, type: "bomb" },
+        { name: "Ataque Cruz", price: 200, type: "cross" }
+    ];
+
+    items.forEach(item => {
+        const div = document.createElement("div");
+        div.style.margin = "10px";
+        div.style.padding = "10px";
+        div.style.border = "1px solid #00ffff";
+        
+        div.innerHTML = `
+            <span>${item.name} (🪙${item.price})</span>
+            <button onclick="buyItem('${item.type}', ${item.price})" style="margin-left: 10px;">Comprar</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function buyItem(type, price) {
+    if (game.player.coins >= price) {
+        game.player.coins -= price;
+        
+        // Lógica de qué compras
+        if (type === "health") game.player.health = game.player.maxHealth;
+        if (type === "bomb") game.player.bombs = (game.player.bombs || 0) + 1;
+        
+        updateHUD(); // Actualizamos los números de la pantalla
+        document.getElementById("shop-coins-display").innerText = game.player.coins;
+        alert("¡Compra realizada!");
+    } else {
+        alert("No tienes suficientes monedas.");
+    }
+}
