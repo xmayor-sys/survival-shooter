@@ -2355,14 +2355,9 @@ function showAdminPrompt() {
     if (pass === "admin8009") { toggleAdminMenu(true); } else if (pass) { alert("Contraseña incorrecta."); }
 }
 function toggleAdminMenu(show) {
-    adminMenu.style.display = show ? 'block' : 'none';
-    // Si abrimos el admin (show es true), ocultamos el menú de pausa para que no se pisen
-    // Pero si lo cerramos (show es false), volvemos a mostrar el de pausa
-    if (show) {
-        pauseMenu.style.display = 'none';
-    } else {
-        pauseMenu.style.display = 'flex';
-    }
+    adminMenu.style.display = show ? 'flex' : 'none';
+    pauseMenu.style.display = show ? 'none' : 'flex';
+    if(show) { game.paused = true; showAdminSubMenu('main'); }
 }
 function addLevels(num) {
     alert(`Has ganado ${num} subidas de nivel. Elige tus mejoras.`);
