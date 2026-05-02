@@ -2315,7 +2315,6 @@ window.addEventListener('keydown', (e) => {
         case 'e': game.player.useCrossAttack(); break;
         case 'c': game.player.useChest(); break;
         case 'l': game.player.useLegendaryChest(); break;
-        case 't': toggleShop(true); break;
     }
 });
 window.addEventListener('keyup', (e) => { game.keys[e.key.toLowerCase()] = false; });
@@ -2681,7 +2680,6 @@ function handleGamepadInput() {
         if (wasButtonPressed(3)) game.player.useCrossAttack(); // Triangle
         if (wasButtonPressed(5)) game.player.useChest();        // R1
         if (wasButtonPressed(4)) game.player.useLegendaryChest(); // L1
-        if (wasButtonPressed(9)) toggleShop(true); // Options
     }
 
     if (wasButtonPressed(17)) { // Panel Táctil
