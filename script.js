@@ -1214,11 +1214,21 @@ class CasterEnemy extends Enemy {
 class BroodmotherEnemy extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
-        this.spawnRate = 300; this.spawnTimer = Math.random() * this.spawnRate;
+        this.spawnRate = 300; 
+        this.spawnTimer = Math.random() * this.spawnRate;
     }
+
     update(player) {
         super.update(player);
-        if (++this.spawnTimer >= this.spawnRate) { this.spawnTimer = 0; spawnEnemyAt('normal', this.x, this.y); }
+
+        // --- ARREGLO DE BORDES: No permite que el enemigo salga del mapa ---
+        this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
+        this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
+
+        if (++this.spawnTimer >= this.spawnRate) { 
+            this.spawnTimer = 0; 
+            spawnEnemyAt('normal', this.x, this.y); 
+        }
     }
 }
 
