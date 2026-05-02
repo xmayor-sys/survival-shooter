@@ -2852,25 +2852,31 @@ function buyItem(type, price) {
 function volverAlMenu() {
     console.log("Intentando volver al menú...");
     
-    // 1. Detener el juego
+  function volverAlMenu() {
+    console.log("Intentando volver al menú...");
+    
+    // 1. Parar el juego
     gameActive = false; 
     
-    // 2. Salir de la sala online de forma segura
-    // Verificamos si 'client' existe y si está en un estado que permita salir
-    if (typeof client !== 'undefined' && client.isJoinedToRoom()) {
+    // 2. Salir de la sala online de forma segura (comprobando el estado)
+    if (typeof client !== 'undefined' && client.isReady()) {
+        // En Photon JS, para salir se usa leaveRoom()
         client.leaveRoom();
     }
     
-    // 3. Ocultar todos los menús de juego
-    if (document.getElementById("pause-menu")) document.getElementById("pause-menu").style.display = "none";
-    if (document.getElementById("game-over-screen")) document.getElementById("game-over-screen").style.display = "none";
-    
-    // 4. Mostrar el menú principal
+    // 3. Limpiar la pantalla: Ocultar Pause y Game Over
+    const pauseMenu = document.getElementById("pause-menu");
+    const gameOver = document.getElementById("game-over-screen");
     const mainMenu = document.getElementById("main-menu");
+
+    if (pauseMenu) pauseMenu.style.display = "none";
+    if (gameOver) gameOver.style.display = "none";
+    
+    // 4. Mostrar el Menú Principal
     if (mainMenu) {
         mainMenu.style.display = "flex";
     } else {
-        // Si no encuentra el menú, recargamos como último recurso
+        // Si el menú no existe por algún motivo, recargamos
         window.location.reload();
     }
 }
