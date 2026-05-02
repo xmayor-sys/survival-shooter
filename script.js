@@ -2707,66 +2707,85 @@ client.onStateChange = function (state) {
 client.connectToRegionMaster("eu");
 // --- LÓGICA DE LA NUEVA TIENDA DE PARTIDA (RUN SHOP) ---
 
-// 1. Datos de las mejoras de la partida (Iconos, Nombres, Costes Base, etc.)
-// Estos datos siguen la estructura de tu Captura 2
+// =========================================================
+// --- LÓGICA DE LA NUEVA TIENDA DE PARTIDA (RUN SHOP) ---
+// =========================================================
+
+// 1. INVENTARIO DE LA TIENDA (Tus objetos + Mejoras Base)
 const runUpgradesData = [
-    { id: 'dmg_basic', name: 'Daño Base', icon: '⚔️', baseCost: 10, currentLevel: 0, costFactor: 1.6, statEffect: 5 },
-    { id: 'fire_rate', name: 'Cadencia', icon: '🔥', baseCost: 15, currentLevel: 0, costFactor: 1.5, statEffect: 1 },
-    { id: 'move_speed', name: 'Vel. Mov', icon: '👟', baseCost: 12, currentLevel: 0, costFactor: 1.4, statEffect: 0.3 },
-    { id: 'heal_emergency', name: 'Curación Rápida', icon: '❤️', baseCost: 20, currentLevel: 0, costFactor: 1.1, statEffect: 'Full HP' } 
-    // Curación no sube de nivel, solo cura a tope y sube un poco el precio.
+    // TUS OBJETOS ORIGINALES
+    { id: 'bomb', name: 'Mina Estática', icon: '⬛', baseCost: 10, currentLevel: 0, costFactor: 1, statEffect: '1 Mina', onOffer: false },
+    { id: 'cross_attack', name: 'Disp. Cruzado', icon: '🔺', baseCost: 50, currentLevel: 0, costFactor: 1, statEffect: '+1 Carga', onOffer: false },
+    { id: 'xp_potion', name: 'Poción 2x', icon: '💰', baseCost: 75, currentLevel: 0, costFactor: 1, statEffect: '120s Doble XP/Oro', onOffer: false },
+    { id: 'resurrection', name: 'Resurrección', icon: '🧟', baseCost: 100, currentLevel: 0, costFactor: 1, statEffect: 'Revive 50% HP', onOffer: false },
+    { id: 'rate_boost', name: 'Cartucho Mej.', icon: '🔫', baseCost: 500, currentLevel: 0, costFactor: 1.5, statEffect: 'Cadencia x1.25', onOffer: false },
+    { id: 'four_seasons', name: 'Ciclo Eterno', icon: '🌀', baseCost: 1000, currentLevel: 0, costFactor: 1, statEffect: '4 Orbes (50s)', onOffer: false },
+    
+    // MEJORAS BASE EXTRA
+    { id: 'dmg_basic', name: 'Daño Base', icon: '⚔️', baseCost: 60, currentLevel: 0, costFactor: 1.6, statEffect: '+5 Daño', onOffer: false },
+    { id: 'move_speed', name: 'Velocidad', icon: '👟', baseCost: 40, currentLevel: 0, costFactor: 1.4, statEffect: '+0.3 Vel', onOffer: false }
 ];
 
-// 2. Función para calcular el precio actual de una mejora según su nivel
-function getCurrentCost(upgrade) {
-    if (upgrade.id === 'heal_emergency') return upgrade.baseCost; // Curar tiene coste fijo o sube muy poco
-    // Fórmula de coste: costeBase * (factor^(nivel))
-    return Math.floor(upgrade.baseCost * Math.pow(upgrade.costFactor, upgrade.currentLevel));
+// 2. Elegir una oferta al azar
+function applyRunShopOffers() {
+    runUpgradesData.forEach(upgrade => upgrade.onOffer = false);
+    if (runUpgradesData.length > 0) {
+        const randomIndex = Math.floor(Math.random() * runUpgradesData.length);
+        runUpgradesData[randomIndex].onOffer = true;
+    }
 }
 
-// 3. Función Principal: Actualizar la Interfaz de la tienda (Run Shop UI)
-// Llama a esta función cada vez que el score/oro cambie.
+// 3. Función para calcular el precio actual (Con descuento de oferta)
+function getCurrentCost(upgrade) {
+    let cost = Math.floor(upgrade.baseCost * Math.pow(upgrade.costFactor, upgrade.currentLevel));
+    if (upgrade.onOffer) {
+        cost = Math.floor(cost * 0.7); // 30% de descuento
+    }
+    return cost;
+}
+
+// 4. Actualizar la Interfaz de la tienda
 function updateRunShopUI() {
     const container = document.getElementById('run-upgrades-container');
     const scoreDisplay = document.getElementById('shop-score-display');
     
-    // Si la partida no ha empezado o el contenedor no existe, no hacemos nada
     if (!container) return;
-
-    // Actualizamos el contador de dinero de la tienda
-    if (scoreDisplay) scoreDisplay.innerText = Math.floor(game.score);
-
-    // Vaciamos el contenedor para redibujarlo todo
+    
+    // ⚠️ ATENCIÓN: Asumimos que tu dinero está en game.coins, ajusta si es game.score
+    if (scoreDisplay) scoreDisplay.innerText = Math.floor(game.coins || 0);
+    
     container.innerHTML = '';
 
-    // Generamos cada fila de mejora (Layout Captura 2 - Azul)
     runUpgradesData.forEach(upgrade => {
         const currentCost = getCurrentCost(upgrade);
-        const canAfford = game.score >= currentCost;
+        // ⚠️ ATENCIÓN: Lo mismo aquí, comprueba que game.coins es tu variable de dinero
+        const canAfford = (game.coins || 0) >= currentCost;
         
-        // Creamos la info de stats basándonos en tu captura
         let statText = '';
-        if (upgrade.id === 'heal_emergency') {
+        if (upgrade.costFactor === 1) {
             statText = `Efecto: ${upgrade.statEffect}`;
         } else {
-            // Ejemplo: Level: 0 | Dmg: +5 por nivel
-            statText = `Nivel: ${upgrade.currentLevel} | Stat: +${upgrade.statEffect}`;
+            statText = `Nivel: ${upgrade.currentLevel} | Stat: ${upgrade.statEffect}`;
         }
 
-        // Creamos el HTML de la fila
+        const offerBadgeHtml = upgrade.onOffer ? `<span class="offer-badge">¡OFERTA!</span>` : '';
+        const itemOfferClass = upgrade.onOffer ? 'on-offer' : '';
+        const buttonOfferClass = upgrade.onOffer ? 'on-offer' : '';
+
         const upgradeHtml = `
-            <div class="upgrade-item" title="Cuesta ${currentCost}">
+            <div class="upgrade-item ${itemOfferClass}" title="Cuesta ${currentCost}">
                 <div class="upgrade-info-block">
                     <div class="upgrade-icon">${upgrade.icon}</div>
-                    
                     <div class="upgrade-text">
-                        <span class="upgrade-name">${upgrade.name}</span>
+                        <div class="upgrade-name-container">
+                            <span class="upgrade-name">${upgrade.name}</span>
+                            ${offerBadgeHtml}
+                        </div>
                         <span class="upgrade-stats">${statText}</span>
                     </div>
                 </div>
-
                 <button 
-                    class="buy-button" 
+                    class="buy-button ${buttonOfferClass}" 
                     ${!canAfford ? 'disabled' : ''} 
                     onclick="buyRunUpgrade('${upgrade.id}')"
                 >
@@ -2775,71 +2794,79 @@ function updateRunShopUI() {
             </div>
         `;
         
-        // Añadimos la fila al contenedor
         container.innerHTML += upgradeHtml;
     });
 }
 
-// 4. Función: Comprar una mejora (Motor de la tienda)
+// 5. El MOTOR DE COMPRA (Conectado a tus variables reales)
 function buyRunUpgrade(upgradeId) {
-    // ⚠️ EL TRUCO DEL BUJE: 
-    // Lo primero que hacemos es devolver el foco al canvas para que el teclado 
-    // siga funcionando en el juego, no en el botón.
-    canvas.focus();
-
-    // Buscamos la mejora seleccionada
+    canvas.focus(); // Devolver foco inmediatamente al juego
+    
     const upgrade = runUpgradesData.find(u => u.id === upgradeId);
     if (!upgrade) return;
 
     const currentCost = getCurrentCost(upgrade);
+    const p = game.player;
 
-    // Comprobamos si tiene dinero
-    if (game.score >= currentCost) {
-        // 1. Cobramos
-        game.score -= currentCost;
+    // ⚠️ ATENCIÓN: Revisa que "game.coins" sea la variable de tus monedas
+    if (game.coins >= currentCost) {
+        
+        game.coins -= currentCost;
 
-        // 2. Aplicamos el efecto según el ID (Cámbialo según tus variables de juego)
         switch(upgrade.id) {
+            case 'bomb':
+                p.bombs++;
+                updateHUD();
+                break;
+                
+            case 'cross_attack':
+                p.crossAttacksAvailable = (p.crossAttacksAvailable || 0) + 1;
+                updateHUD();
+                break;
+                
+            case 'xp_potion':
+                game.xpCoinMultiplier = 2; 
+                game.buffTimer = 120 * 60;
+                break;
+                
+            case 'resurrection':
+                p.hasResurrection = true;
+                break;
+                
+            case 'rate_boost':
+                applyRateMultiplier(p, 1.25);
+                upgrade.currentLevel++; 
+                break;
+                
+            case 'four_seasons':
+                p.hasFourSeasons = true;
+                setTimeout(() => {
+                    p.hasFourSeasons = false;
+                    console.log("Ciclo Eterno agotado");
+                }, 50000);
+                break;
+                
             case 'dmg_basic':
-                // game.playerDamage += upgrade.statEffect; // Ejemplo
+                p.damage = (p.damage || 10) + 5; 
                 upgrade.currentLevel++;
                 break;
-            case 'fire_rate':
-                // game.playerFireRate += upgrade.statEffect; // Ejemplo
-                upgrade.currentLevel++;
-                break;
+
             case 'move_speed':
-                // game.playerMoveSpeed += upgrade.statEffect; // Ejemplo
+                p.speed = (p.speed || 3) + 0.3;
                 upgrade.currentLevel++;
-                break;
-            case 'heal_emergency':
-                // Curar a tope (pero sin subir de nivel)
-                // game.playerHP = game.playerMaxHP; // Ejemplo
-                // Opcional: subir coste de curación: upgrade.baseCost += 5;
                 break;
         }
 
-        // 3. Actualizamos la interfaz inmediatamente
         updateRunShopUI();
-        
-        // Opcional: Un sonido de compra "Cha-ching!"
+        if (typeof updateHUD === "function") updateHUD();
     }
 }
 
-// 5. Integración: Iniciar la tienda
-// Llama a esta función al empezar una partida nueva
+// 6. Iniciar la tienda
 function startRunShop() {
-    // Reseteamos niveles por si venimos de otra partida
     runUpgradesData.forEach(u => u.currentLevel = 0);
-    
-    // Mostramos la tienda (si la ocultabas antes)
+    applyRunShopOffers();
     const shop = document.getElementById('in-game-shop');
     if (shop) shop.style.display = 'block';
-    
-    // Primera actualización
     updateRunShopUI();
 }
-
-// 6. Integración: Actualizar cuando ganes dinero
-// Busca en tu código donde ganes Score/Oro (ej: al matar un bicho) y añade esto:
-// updateRunShopUI();
