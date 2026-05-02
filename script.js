@@ -2173,7 +2173,13 @@ function startGame(charStats) {
     game.player.baseStats = { ...charStats };
     game.player.bombs = 1; mainMenu.style.display = 'none';
     game.running = true; game.paused = false;
-    updateRebirthButton(); updateHUD(); gameLoop();
+    updateRebirthButton(); 
+    updateHUD(); 
+    
+    // 👇 ¡AQUÍ VA EL PASO 1! Arrancamos la tienda lateral 👇
+    startRunShop(); 
+    
+    gameLoop();
 }
 
 function gameOver() {
