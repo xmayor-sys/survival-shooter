@@ -1816,7 +1816,13 @@ function gainXP(amount) {
 
 function addCoins(amount) {
     game.coins += Math.ceil(amount * game.player.coinMultiplier * game.xpCoinMultiplier);
+    
+    // 1. Actualiza el texto de arriba (Vida, XP)
     updateHUD();
+    
+    // 2. Actualiza la tienda lateral (Ilumina los botones si tienes dinero)
+    updateRunShopUI();
+    
     if(game.running) updateRebirthButton();
 }
 
