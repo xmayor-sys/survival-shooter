@@ -2850,20 +2850,27 @@ function buyItem(type, price) {
     }
 }
 function volverAlMenu() {
-    // 1. Detener la partida actual
+    console.log("Intentando volver al menú...");
+    
+    // 1. Detener el juego
     gameActive = false; 
     
-    // 2. Si estás en una sala online, salir de ella
-    if (typeof client !== 'undefined' && client.isInLobby()) {
+    // 2. Salir de la sala online de forma segura
+    // Verificamos si 'client' existe y si está en un estado que permita salir
+    if (typeof client !== 'undefined' && client.isJoinedToRoom()) {
         client.leaveRoom();
     }
     
-    // 3. Ocultar los menús de juego
-    document.getElementById("pause-menu").style.display = "none";
-    document.getElementById("game-over-screen").style.display = "none";
+    // 3. Ocultar todos los menús de juego
+    if (document.getElementById("pause-menu")) document.getElementById("pause-menu").style.display = "none";
+    if (document.getElementById("game-over-screen")) document.getElementById("game-over-screen").style.display = "none";
     
-    // 4. Mostrar el menú de inicio
-    document.getElementById("main-menu").style.display = "flex";
-    
-    console.log("Regresando al menú principal de forma segura.");
+    // 4. Mostrar el menú principal
+    const mainMenu = document.getElementById("main-menu");
+    if (mainMenu) {
+        mainMenu.style.display = "flex";
+    } else {
+        // Si no encuentra el menú, recargamos como último recurso
+        window.location.reload();
+    }
 }
