@@ -8,7 +8,10 @@
 </head>
 <body>
   
-    
+    </div>
+    <button id="toggle-connection" onclick="toggleMultiplayer()" style="cursor: pointer; background: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; width: 100%;">
+        CONECTAR
+    </button>
 </div>
 <div id="fpsCounter" style="position: fixed; top: 10px; right: 10px; color: lime; font-family: 'Courier New', Courier, monospace; font-weight: bold; background: rgba(0,0,0,0.7); padding: 8px; border: 1px solid #444; border-radius: 5px; z-index: 1000; min-width: 70px; text-align: center;">
 FPS: 0
@@ -70,38 +73,14 @@ FPS: 0
     </div>
 
     <div id="main-menu" class="menu-overlay" style="display: flex;">
-    <div class="menu-content">
-        <h2>SURVIVAL SHOOTER</h2>
-        
-        <input type="text" id="player-name-input" placeholder="Tu Nombre..." maxlength="12" 
-               style="padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 2px solid #00ffff; background: #111; color: white; text-align: center; font-size: 1.1em;">
-        
-        <button onclick="showDifficultyMenu()">Jugar Solo</button>
-        
-        <button onclick="toggleOnlineMenu(true)" style="background-color: #2980b9; border: 2px solid #3498db;">🌐 Modo Online</button>
-        
-        <button id="load-button" onclick="showTalentTree(true)">Mejoras Permanentes</button>
-        <button onclick="showAchievementsMenu(true)">Logros</button>
-        <button onclick="showSettingsMenu(true)">Configuraciones</button>
-        <a href="mailto:alain.abecia@ikasle.eus?subject=Reporte de Bug" class="menu-button">Reportar Bugs</a>
-    </div>
-</div>
-
-<div id="online-lobby-menu" class="menu-overlay" style="display: none;">
-    <div class="menu-content">
-        <h2>SALA MULTIJUGADOR</h2>
-        <div id="lobby-status" style="margin-bottom: 15px; color: #00ffff; font-family: monospace;"></div>
-        
-        <button onclick="crearSalaPrivada()">➕ Crear Nueva Sala</button>
-        
-        <div style="margin: 20px 0; border-top: 1px solid #444; padding-top: 20px;">
-            <input type="text" id="join-room-input" placeholder="Introduce Código..." style="padding: 10px; text-align: center; width: 80%; margin-bottom: 10px;">
-            <button onclick="unirseASalaPrivada()" style="background-color: #27ae60;">🔗 Unirse con Código</button>
+        <div class="menu-content">
+            <h2>SURVIVAL SHOOTER</h2>
+            <button onclick="showDifficultyMenu()">Jugar</button>
+            <button id="load-button" onclick="showTalentTree(true)">Mejoras Permanentes</button>
+            <button onclick="showAchievementsMenu(true)">Logros</button>
+            <button onclick="showSettingsMenu(true)">Configuraciones</button>
+            <a href="mailto:alain.abecia@ikasle.eus?subject=Reporte de Bug - Survival Shooter" class="menu-button">Reportar Bugs</a>
         </div>
-        
-        <button onclick="toggleOnlineMenu(false)" style="background-color: #c0392b;">Volver</button>
-    </div>
-</div>
     </div>
 
     <div id="achievements-menu" class="menu-overlay">
@@ -184,7 +163,7 @@ FPS: 0
             <button onclick="showInventoryMenu(true)">🎒 Inventario</button>
             <button onclick="toggleShop(true)">🛒 Abrir Tienda (T)</button>
             <button onclick="showAdminPrompt()">🛠️ Modo Admin</button> 
-            <button onclick="volverAlMenu()">🚪 Salir al Menú</button>
+            <button onclick="window.location.reload()">🔄 Reiniciar Juego</button>
         </div>
     </div>
     <div id="game-over-screen" class="menu-overlay">
@@ -192,7 +171,7 @@ FPS: 0
             <h2>GAME OVER</h2>
             <p>Has sobrevivido durante <span id="final-time">0</span> segundos.</p>
             <p>Tu nivel máximo de Rebirth fue: <span id="final-rebirth-level">0</span>.</p>
-            <button onclick="volverAlMenu()">🏠 Menú Principal</button>
+            <button onclick="window.location.reload()">Intentar de Nuevo</button>
         </div>
     </div>
     <div id="levelup-menu" class="menu-overlay">
@@ -254,20 +233,7 @@ FPS: 0
             </div>
         </div>
      </div>
-      <div id="chat-system" style="position: fixed; bottom: 20px; left: 20px; z-index: 2000; display: none;">
-    <div id="chat-box" style="width: 300px; height: 120px; background: rgba(0,0,0,0.6); overflow-y: auto; color: white; padding: 10px; font-size: 0.9em; border-radius: 5px; margin-bottom: 5px; border: 1px solid #333;"></div>
-    <input type="text" id="chat-input" placeholder="Presiona ENTER para hablar..." style="width: 300px; padding: 8px; background: #000; color: #00ffff; border: 1px solid #00ffff; border-radius: 5px;">
-</div>
-
-<div id="ping-display" style="position: fixed; top: 15px; right: 100px; z-index: 2000; color: white; font-family: monospace; display: flex; align-items: center; gap: 8px;">
-    <div id="ping-ball" style="width: 12px; height: 12px; border-radius: 50%; background: #777;"></div>
-    <span id="ping-ms">0ms</span>
-</div>
-
-<div id="fpsCounter" style="...">
-FPS: 0
-</div>
-    
+      
 <script src="photon.min.js"></script>
 <script src="script.js"></script>
 
