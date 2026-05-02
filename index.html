@@ -167,7 +167,7 @@
             
             <button onclick="showInventoryMenu(true)">🎒 Inventario</button>
             <button onclick="showAdminPrompt()">🛠️ Modo Admin</button> 
-            <button onclick="window.location.reload()">🔄 Reiniciar Juego</button>
+            <button onclick="window.resetGame()">🔄 Reiniciar Juego</button>
         </div>
     </div>
     <div id="game-over-screen" class="menu-overlay">
@@ -175,7 +175,7 @@
             <h2>GAME OVER</h2>
             <p>Has sobrevivido durante <span id="final-time">0</span> segundos.</p>
             <p>Tu nivel máximo de Rebirth fue: <span id="final-rebirth-level">0</span>.</p>
-            <button onclick="window.location.reload()">Intentar de Nuevo</button>
+            <button onclick="window.resetGame()">Intentar de Nuevo</button>
         </div>
     </div>
     <div id="levelup-menu" class="menu-overlay">
