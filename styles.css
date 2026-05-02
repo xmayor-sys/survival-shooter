@@ -169,3 +169,134 @@
         text-align: center;
         pointer-events: none;
     }
+/* --- NUEVA TIENDA LATERAL (ESTILO TURQUESA) --- */
+
+/* Contenedor para poner canvas y tienda juntos */
+#game-run-container {
+    display: flex;
+    flex-direction: row; /* Uno al lado del otro */
+    align-items: flex-start;
+    justify-content: center;
+    gap: 15px; /* Espacio entre el juego y la tienda */
+    margin: 20px auto;
+}
+
+/* El panel principal de la tienda (Estilo Captura 1 - Verde) */
+#in-game-shop {
+    width: 280px;
+    height: 600px; /* Misma altura que tu canvas */
+    background: rgba(10, 10, 15, 0.95); /* Fondo oscuro profundo */
+    border: 3px solid var(--menu-glow-color); /* Borde de Neón Turquesa brillante */
+    border-radius: 8px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5); /* Resplandor exterior */
+    padding: 15px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Por si añades muchas mejoras */
+    font-family: 'Courier New', Courier, monospace; /* Fuente retro/ciberpunk */
+}
+
+/* El título que brilla */
+.shop-header {
+    color: var(--menu-glow-color);
+    text-align: center;
+    text-shadow: 0 0 10px var(--menu-glow-color);
+    margin-top: 0;
+    font-size: 1.3em;
+}
+
+/* El contador de score dentro de la tienda */
+.shop-score-counter {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+/* Contenedor de las filas */
+#run-upgrades-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Fila de mejora (Layout Captura 2 - Azul: Icono | Nombre | Botón) */
+.upgrade-item {
+    display: flex;
+    align-items: center; /* Alinea los elementos verticalmente */
+    justify-content: space-between; /* Espacio entre el texto y el botón */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+    transition: background 0.2s;
+}
+
+.upgrade-item:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+/* El bloque de icono y info juntos */
+.upgrade-info-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+}
+
+/* El Icono del objeto */
+.upgrade-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em; /* Emojis o iconos grandes */
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+}
+
+/* El Nombre y Stats que brillan en turquesa */
+.upgrade-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.upgrade-name {
+    font-weight: bold;
+    color: var(--menu-glow-color);
+    text-shadow: 0 0 5px var(--menu-glow-color);
+    font-size: 0.9em;
+}
+
+.upgrade-stats {
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* El botón que brilla (Precio) */
+.buy-button {
+    background: transparent;
+    color: var(--menu-glow-color);
+    border: 2px solid var(--menu-glow-color);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.8em;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--menu-glow-color);
+    transition: all 0.2s;
+}
+
+.buy-button:hover:not(:disabled) {
+    background: var(--menu-glow-color);
+    color: #000;
+    box-shadow: 0 0 15px var(--menu-glow-color);
+}
+
+.buy-button:disabled {
+    color: #555;
+    border-color: #555;
+    text-shadow: none;
+    cursor: not-allowed;
+}
