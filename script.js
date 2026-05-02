@@ -2849,3 +2849,21 @@ function buyItem(type, price) {
         alert("No tienes suficientes monedas.");
     }
 }
+function volverAlMenu() {
+    // 1. Detener la partida actual
+    gameActive = false; 
+    
+    // 2. Si estás en una sala online, salir de ella
+    if (typeof client !== 'undefined' && client.isInLobby()) {
+        client.leaveRoom();
+    }
+    
+    // 3. Ocultar los menús de juego
+    document.getElementById("pause-menu").style.display = "none";
+    document.getElementById("game-over-screen").style.display = "none";
+    
+    // 4. Mostrar el menú de inicio
+    document.getElementById("main-menu").style.display = "flex";
+    
+    console.log("Regresando al menú principal de forma segura.");
+}
