@@ -7,12 +7,18 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  
-</div>
-<div id="fpsCounter" style="position: fixed; top: 10px; right: 10px; color: lime; font-family: 'Courier New', Courier, monospace; font-weight: bold; background: rgba(0,0,0,0.7); padding: 8px; border: 1px solid #444; border-radius: 5px; z-index: 1000; min-width: 70px; text-align: center;">
-FPS: 0
-</div>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div id="game-run-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <div id="in-game-shop">
+            <h3 class="shop-header">MEJORAS DE PARTIDA</h3>
+            
+            <div class="shop-score-counter">Oro: <span id="shop-score-display">0</span></div>
+
+            <div id="run-upgrades-container"></div>
+        </div>
+    </div>
     <div id="gamepad-indicator">🎮</div>
 
     <div id="boss-health-container">
