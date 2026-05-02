@@ -1066,13 +1066,23 @@ class Enemy extends Entity {
     }
 
     update(player) {
-        // Primero ejecutamos el movimiento normal (que te persigan o huyan)
+        // 1. Primero que hagan su movimiento normal
         super.update(player);
 
-        // 👇 PASO 2: EL MURO INVISIBLE 👇
-        // Esto obliga a que la X y la Y del enemigo siempre estén entre 0 y el ancho/alto del juego
-        this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
-        this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
+        // 2. ¡MURO TOTAL! (Paso 2 actualizado)
+        // Si el enemigo intenta estar en una X menor a 0 o mayor al ancho, lo devolvemos dentro.
+        if (this.x - this.radius < 0) {
+            this.x = this.radius;
+        } else if (this.x + this.radius > WIDTH) {
+            this.x = WIDTH - this.radius;
+        }
+
+        // Si intenta estar en una Y menor a 0 o mayor al alto, lo devolvemos dentro.
+        if (this.y - this.radius < 0) {
+            this.y = this.radius;
+        } else if (this.y + this.radius > HEIGHT) {
+            this.y = HEIGHT - this.radius;
+        }
     }
 }
 
