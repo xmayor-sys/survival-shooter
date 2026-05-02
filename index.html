@@ -73,14 +73,38 @@ FPS: 0
     </div>
 
     <div id="main-menu" class="menu-overlay" style="display: flex;">
-        <div class="menu-content">
-            <h2>SURVIVAL SHOOTER</h2>
-            <button onclick="showDifficultyMenu()">Jugar</button>
-            <button id="load-button" onclick="showTalentTree(true)">Mejoras Permanentes</button>
-            <button onclick="showAchievementsMenu(true)">Logros</button>
-            <button onclick="showSettingsMenu(true)">Configuraciones</button>
-            <a href="mailto:alain.abecia@ikasle.eus?subject=Reporte de Bug - Survival Shooter" class="menu-button">Reportar Bugs</a>
+    <div class="menu-content">
+        <h2>SURVIVAL SHOOTER</h2>
+        
+        <input type="text" id="player-name-input" placeholder="Tu Nombre..." maxlength="12" 
+               style="padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 2px solid #00ffff; background: #111; color: white; text-align: center; font-size: 1.1em;">
+        
+        <button onclick="showDifficultyMenu()">Jugar Solo</button>
+        
+        <button onclick="toggleOnlineMenu(true)" style="background-color: #2980b9; border: 2px solid #3498db;">🌐 Modo Online</button>
+        
+        <button id="load-button" onclick="showTalentTree(true)">Mejoras Permanentes</button>
+        <button onclick="showAchievementsMenu(true)">Logros</button>
+        <button onclick="showSettingsMenu(true)">Configuraciones</button>
+        <a href="mailto:alain.abecia@ikasle.eus?subject=Reporte de Bug" class="menu-button">Reportar Bugs</a>
+    </div>
+</div>
+
+<div id="online-lobby-menu" class="menu-overlay" style="display: none;">
+    <div class="menu-content">
+        <h2>SALA MULTIJUGADOR</h2>
+        <div id="lobby-status" style="margin-bottom: 15px; color: #00ffff; font-family: monospace;"></div>
+        
+        <button onclick="crearSalaPrivada()">➕ Crear Nueva Sala</button>
+        
+        <div style="margin: 20px 0; border-top: 1px solid #444; padding-top: 20px;">
+            <input type="text" id="join-room-input" placeholder="Introduce Código..." style="padding: 10px; text-align: center; width: 80%; margin-bottom: 10px;">
+            <button onclick="unirseASalaPrivada()" style="background-color: #27ae60;">🔗 Unirse con Código</button>
         </div>
+        
+        <button onclick="toggleOnlineMenu(false)" style="background-color: #c0392b;">Volver</button>
+    </div>
+</div>
     </div>
 
     <div id="achievements-menu" class="menu-overlay">
