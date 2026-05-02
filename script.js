@@ -8,7 +8,7 @@ function updateFPS() {
         fps = 0;
         return;
     }
-
+ 
     // Cálculo matemático de los FPS
     let delta = (performance.now() - lastCalledTime) / 1000;
     lastCalledTime = performance.now();
