@@ -1051,21 +1051,30 @@ class Player extends Entity {
         }
     }
 }
-
 class Enemy extends Entity {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type, displayName) {
         super(x, y, radius, color);
-        this.maxHealth = health; this.health = health; this.speed = speed;
-        this.damage = damage; this.xpValue = xp; this.coinValue = coins;
+        this.maxHealth = health; 
+        this.health = health; 
+        this.speed = speed;
+        this.damage = damage; 
+        this.xpValue = xp; 
+        this.coinValue = coins;
         this.type = type;
         this.displayName = displayName || type.charAt(0).toUpperCase() + type.slice(1);
         this.hitFlashTimer = 0;
     }
+
     update(player) {
-        let currentSpeed = this.speed * (game.waveConfig.speedMultiplier || 1);
-        if(player.auraLevel === 'EVOLVED' && player.auraSlows && Math.hypot(player.x - this.x, player.y - this.y) < player.auraRadius + this.radius) {
-            currentSpeed *= 0.8;
-        }
+        // Primero ejecutamos el movimiento normal (que te persigan o huyan)
+        super.update(player);
+
+        // 👇 PASO 2: EL MURO INVISIBLE 👇
+        // Esto obliga a que la X y la Y del enemigo siempre estén entre 0 y el ancho/alto del juego
+        this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
+        this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
+    }
+}
 
         // Los enemigos atacan a los minions
         let target = player;
