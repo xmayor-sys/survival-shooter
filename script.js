@@ -2898,3 +2898,58 @@ window.addEventListener("keydown", function(e) {
         e.preventDefault();
     }
 }, false);
+// ==========================================
+//   SISTEMA DE GUARDADO AUTOMÁTICO (10s)
+// ==========================================
+
+function autoSaveGame() {
+    // Creamos un paquete con todo lo que queremos salvar
+    const dataToSave = {
+        // Guardamos el oro (usamos las variables que detecté en tu script)
+        permanentGold: game.permanentGold || 0,
+        totalGold: game.totalGold || 0,
+        
+        // Guardamos récords y estadísticas
+        highScore: game.highScore || 0,
+        totalKills: game.stats ? game.stats.totalKills : 0,
+        
+        // Guardamos mejoras de la tienda si las tienes
+        unlockedUpgrades: game.unlockedUpgrades || []
+    };
+
+    // Lo metemos en el "baúl" del navegador (localStorage)
+    localStorage.setItem('survival_game_save', JSON.stringify(dataToSave));
+    
+    // Un mensaje pequeño en la consola para saber que funciona (puedes borrarlo luego)
+    console.log("💾 Partida guardada automáticamente (10s)");
+}
+
+function autoLoadGame() {
+    const savedRaw = localStorage.getItem('survival_game_save');
+    
+    if (savedRaw) {
+        const loadedData = JSON.parse(savedRaw);
+        
+        // Devolvemos los datos a sus variables correspondientes
+        game.permanentGold = loadedData.permanentGold || 0;
+        game.totalGold = loadedData.totalGold || 0;
+        game.highScore = loadedData.highScore || 0;
+        
+        if (game.stats && loadedData.totalKills) {
+            game.stats.totalKills = loadedData.totalKills;
+        }
+
+        console.log("📂 Datos cargados: Oro =", game.permanentGold);
+    } else {
+        console.log("🆕 No hay datos previos, empezando nueva aventura.");
+    }
+}
+
+// 1. Intentar cargar nada más leer el script
+autoLoadGame();
+
+// 2. Configurar el guardado cada 10 segundos (10000 milisegundos)
+setInterval(autoSaveGame, 10000);
+
+// 3. ¡Extra! Guardar también cuando el usuario cierra la pestaña
+window.addEventListener('beforeunload', autoSaveGame);
