@@ -2191,19 +2191,6 @@ function togglePause() {
         game.gamepad.menuSelectionIndex = 0;
     }
 }
-function toggleShop(show) {
-    if (show) {
-        if(game.paused && pauseMenu.style.display === 'flex') pauseMenu.style.display = 'none';
-        game.paused = true; populateShop(); shopMenu.style.display = 'flex';
-    } else {
-        shopMenu.style.display = 'none';
-        if (!game.levelUpPending && !game.chestRoulettePending) game.paused = false;
-    }
-}
-
-function toggleShop(show) {
-    // ... (código existente de la función toggleShop)
-}
 
 // --- PEGA LAS SIGUIENTES DOS FUNCIONES AQUÍ ---
 
