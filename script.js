@@ -2720,3 +2720,73 @@ client.onStateChange = function (state) {
 
 // CONEXIÓN AUTOMÁTICA (Sin botones)
 client.connectToRegionMaster("eu");
+// 1. GENERADOR DE CÓDIGOS (Ej: "XJ92")
+function generarCodigoSala() {
+    return Math.random().toString(36).substring(2, 6).toUpperCase();
+}
+
+// 2. CREAR SALA (HOST)
+function crearSalaPrivada() {
+    const nombre = document.getElementById("player-name-input").value.trim() || "Jugador";
+    client.myPlayer().setName(nombre); // Registra tu nombre en Photon
+    
+    const codigo = generarCodigoSala();
+    console.log("Creando sala con código:", codigo);
+    
+    // Configuramos la sala para que sea privada y tenga un código
+    const opciones = { maxPlayers: 4, isVisible: true, isOpen: true };
+    client.createRoom(codigo, opciones);
+    
+    document.getElementById("lobby-status").innerText = "CÓDIGO DE SALA: " + codigo;
+}
+
+// 3. UNIRSE A SALA (INVITADO)
+function unirseASalaPrivada() {
+    const nombre = document.getElementById("player-name-input").value.trim() || "Invitado";
+    const codigo = document.getElementById("join-room-input").value.trim().toUpperCase();
+    
+    if (codigo.length === 4) {
+        client.myPlayer().setName(nombre);
+        console.log("Intentando unirse a:", codigo);
+        client.joinRoom(codigo);
+    } else {
+        alert("¡Oye! El código debe tener 4 letras.");
+    }
+}
+
+// 4. LÓGICA DEL CHAT LIBRE
+document.getElementById("chat-input").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        const mensaje = this.value.trim();
+        if (mensaje !== "" && client.isInLobby() === false) {
+            // Enviamos el mensaje a todos los demás (Evento código 10)
+            client.raiseEvent(10, { 
+                msg: mensaje, 
+                sender: client.myPlayer().name 
+            });
+            mostrarMensajeEnChat("Tú", mensaje);
+            this.value = ""; // Limpiar input
+        }
+    }
+});
+
+// Recibir mensajes de otros
+client.onEvent = function(code, content, actorNr) {
+    if (code === 10) {
+        mostrarMensajeEnChat(content.sender, content.msg);
+    }
+};
+
+function mostrarMensajeEnChat(autor, texto) {
+    const box = document.getElementById("chat-box");
+    const nuevoMensaje = document.createElement("div");
+    nuevoMensaje.innerHTML = `<strong>${autor}:</strong> ${texto}`;
+    box.appendChild(nuevoMensaje);
+    box.scrollTop = box.scrollHeight; // Auto-scroll hacia abajo
+}
+
+// 5. CONTROL DEL MENÚ ONLINE
+function toggleOnlineMenu(show) {
+    document.getElementById("main-menu").style.display = show ? "none" : "flex";
+    document.getElementById("online-lobby-menu").style.display = show ? "flex" : "none";
+}
