@@ -2928,61 +2928,53 @@ function autoLoadGame() {
 autoLoadGame();
 setInterval(autoSaveGame, 10000);
 window.addEventListener('beforeunload', autoSaveGame);
-
 // ==========================================
-// SISTEMA DE PARTIDAS TOTAL (GUARDA TODO)
+// SISTEMA DE PARTIDAS GUARDADAS (FIXED)
 // ==========================================
 
 function abrirMenuPartidas() {
-    if (typeof mainMenu !== 'undefined') mainMenu.style.display = 'none';
-    const pMenu = document.getElementById('partidas-menu');
-    if(pMenu) {
-        pMenu.style.display = 'flex';
+    // Ocultamos el menú principal y mostramos el de partidas
+    if (mainMenu) mainMenu.style.display = 'none';
+    if (partidasMenu) {
+        partidasMenu.style.display = 'flex';
         cargarListaPartidas();
     }
 }
 
 function cerrarMenuPartidas() {
-    const pMenu = document.getElementById('partidas-menu');
-    if(pMenu) pMenu.style.display = 'none';
-    if (typeof mainMenu !== 'undefined') mainMenu.style.display = 'flex';
+    if (partidasMenu) partidasMenu.style.display = 'none';
+    if (mainMenu) mainMenu.style.display = 'flex';
 }
 
 function guardarPartidaManual() {
-    // Capturamos la ronda actual
+    // Detectamos la ronda actual correctamente
     let rondaParaGuardar = game.wave || game.currentWave || 0;
     
-    // El "Saco" donde metemos toda la info de la partida actual
     const dataToSave = {
-        // Stats globales y permanentes
         permanentGold: game.permanentGold || 0,
-        highScore: game.highScore || 0,
-        unlockedUpgrades: game.unlockedUpgrades || [],
-        
-        // Estado específico de esta partida
-        wave: rondaParaGuardar,
         totalGold: game.totalGold || 0,
-        bombs: game.bombs || 0,
-        chests: game.chests || 0,
-        playerHealth: game.player ? game.player.health : 100,
-        stats: game.stats ? { ...game.stats } : {}
+        highScore: game.highScore || 0,
+        totalKills: game.stats ? game.stats.totalKills : 0,
+        unlockedUpgrades: game.unlockedUpgrades || [],
+        wave: rondaParaGuardar
     };
 
     let historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
+    
     let nuevaEntrada = {
         fecha: new Date().toLocaleDateString(),
         hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        ronda: rondaParaGuardar + 1,
         puntos: game.highScore || 0,
+        ronda: rondaParaGuardar + 1, // Guardamos visualmente la ronda real
         datos: dataToSave
     };
 
     historial.push(nuevaEntrada);
-    if (historial.length > 10) historial.shift(); // Guardar solo las últimas 10
+    if (historial.length > 10) historial.shift(); // Máximo 10 partidas
     
     localStorage.setItem('historial_partidas', JSON.stringify(historial));
     
-    alert("💾 ¡Partida completa guardada!\nRonda: " + (rondaParaGuardar + 1) + " | Bombas: " + dataToSave.bombs);
+    alert("💾 ¡Partida guardada con éxito! Ronda: " + (rondaParaGuardar + 1));
 }
 
 function cargarListaPartidas() {
@@ -2997,15 +2989,18 @@ function cargarListaPartidas() {
         return;
     }
 
+    // Mostramos las partidas (la más reciente primero)
     historial.slice().reverse().forEach((p, i) => {
         const indexReal = historial.length - 1 - i; 
         const item = document.createElement('div');
         item.className = 'partida-item';
+        item.style.cursor = 'pointer';
         item.onclick = () => cargarPartidaManual(indexReal);
+        
         item.innerHTML = `
             <div class="partida-info">
-                <span class="partida-fecha">📅 ${p.fecha} - ${p.hora}</span>
-                <span class="partida-ronda">🌊 Ronda: ${p.ronda}</span>
+                <span class="partida-fecha">📅 ${p.fecha} - 🕒 ${p.hora}</span>
+                <span class="partida-hora" style="color: #00ffff; font-weight: bold;">🌊 Ronda: ${p.ronda}</span>
             </div>
             <div class="partida-puntos">🏆 ${p.puntos} pts</div>
         `;
@@ -3018,37 +3013,33 @@ function cargarPartidaManual(index) {
     let partida = historial[index];
 
     if (partida && partida.datos) {
-        const d = partida.datos;
-
-        // 1. Restauramos el inventario completo
-        game.permanentGold = d.permanentGold;
-        game.totalGold = d.totalGold || 0;
-        game.highScore = d.highScore;
-        game.wave = d.wave;
-        game.currentWave = d.wave;
-        game.bombs = d.bombs || 0;
-        game.chests = d.chests || 0;
+        // 1. Cargamos los datos en el objeto global del juego
+        game.permanentGold = partida.datos.permanentGold;
+        game.highScore = partida.datos.highScore;
+        game.wave = partida.datos.wave;
+        game.currentWave = partida.datos.wave;
         
-        if (game.stats && d.stats) game.stats = d.stats;
-
-        // 2. Restauramos la vida
-        if(game.player) {
-            game.player.health = d.playerHealth || game.player.maxHealth;
-        }
-
-        // 3. Limpiamos proyectiles y enemigos viejos
+        // 2. LIMPIEZA TOTAL PARA EVITAR PANTALLA VACÍA
         game.enemies = [];
         game.projectiles = [];
         game.gems = [];
+        game.particles = []; // Limpiamos efectos visuales
         
-        // 4. Arrancamos el motor del juego
+        if (game.player) {
+            game.player.health = game.player.maxHealth;
+            // Opcional: poner al jugador en el centro
+            game.player.x = WIDTH / 2;
+            game.player.y = HEIGHT / 2;
+        }
+
+        // 3. ACTIVAR EL JUEGO (Esto hace que al darle a Jugar todo funcione)
         game.active = true;
         game.paused = false;
 
-        // Cerramos menús y avisamos
+        // Guardamos también en el slot de auto-guardado principal
+        localStorage.setItem('survival_game_save', JSON.stringify(partida.datos));
+        
+        alert("📂 Cargada Ronda " + (partida.datos.wave + 1) + ".\n¡Dale a JUGAR o entra al mapa para continuar!");
         cerrarMenuPartidas();
-        if (typeof mainMenu !== 'undefined') mainMenu.style.display = 'none';
-
-        alert("📂 Cargada Ronda " + (game.wave + 1) + "\nBombas: " + game.bombs + " | Oro: " + game.totalGold);
     }
 }
