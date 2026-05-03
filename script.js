@@ -101,6 +101,9 @@ function preloadAssets() {
     // Imagen del Arch Caster Boss (ya la tienes)
     loadAsset('archCasterBossSprite', 'jefe_final.png');
 
+    // Pon esto donde cargas las imágenes
+    loadAsset('broodQueenSprite', 'La_reina_de_la_Prole.png');
+
     // Imagen del Proyectil del Jefe (ya la tienes)
     loadAsset('bossProjectileSprite', 'bola_de_fuego.png');
 
