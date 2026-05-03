@@ -1218,20 +1218,56 @@ class CasterEnemy extends Enemy {
 class BroodmotherEnemy extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
+        
+        // 1. Aquí conectamos la foto
+        this.sprite = images.broodQueenSprite; 
+        this.spriteWidth = 120;  // Tamaño de la imagen en pantalla
+        this.spriteHeight = 120;
+
         this.spawnRate = 300; 
         this.spawnTimer = Math.random() * this.spawnRate;
     }
 
     update(player) {
-        super.update(player);
+        // --- MOVIMIENTO FANTASMA (Atraviesa muros) ---
+        // Calculamos la dirección hacia el jugador
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
+        const angle = Math.atan2(dy, dx);
+        
+        // Movemos a la Reina directamente (esto ignora las colisiones de muros)
+        this.x += Math.cos(angle) * this.speed;
+        this.y += Math.sin(angle) * this.speed;
 
-        // --- ARREGLO DE BORDES: No permite que el enemigo salga del mapa ---
-        this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
-        this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
-
+        // Invocación de súbditos (prole)
         if (++this.spawnTimer >= this.spawnRate) { 
             this.spawnTimer = 0; 
             spawnEnemyAt('normal', this.x, this.y); 
+        }
+    }
+
+    draw() {
+        // --- DIBUJAR LA FOTO DE LA REINA ---
+        // Si la imagen cargó bien, la dibujamos
+        if (this.sprite && this.sprite.complete) {
+            ctx.save();
+            // Si le disparas, parpadea un poco (opcional)
+            if (this.hitFlashTimer > 0) {
+                this.hitFlashTimer--;
+                ctx.filter = 'brightness(2)';
+            }
+            
+            ctx.drawImage(
+                this.sprite, 
+                this.x - this.spriteWidth / 2, 
+                this.y - this.spriteHeight / 2, 
+                this.spriteWidth, 
+                this.spriteHeight
+            );
+            ctx.restore();
+        } else {
+            // Si la foto falla, dibuja el círculo para que no sea invisible
+            super.draw();
         }
     }
 }
