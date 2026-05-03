@@ -1321,52 +1321,62 @@ class SniperEnemy extends Enemy {
 }
 
 
-class JuggernautBoss extends Enemy {
+class BroodQueenBoss extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type, displayName) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type, displayName);
-        this.isEnraged = false;
-        this.novaAttackRate = 240; // 4 seconds
-        this.novaAttackTimer = 0;
-        this.hookAttackRate = 420; // 7 seconds
-        this.hookAttackTimer = 120;
+        this.spawnRate = 180; // 3 segundos
+        this.spawnTimer = 0;
 
-        // --- CAMBIO: Propiedad para la imagen del sprite ---
-        this.sprite = images.juggernautBossSprite; // Referencia a la imagen cargada
-        // Ajusta estos valores al tamaño de tu imagen (el radio original era 30)
-        this.spriteWidth = 100; 
-        this.spriteHeight = 100; 
-        // --- FIN CAMBIO ---
+        // --- PROPIEDADES DE TEXTURA ---
+        this.sprite = images.broodQueenSprite; 
+        this.spriteWidth = this.radius * 2.8;  
+        this.spriteHeight = this.radius * 2.8;
     }
-    
+
     update(player) {
-        if (player.isHooked) { /* No se mueve mientras engancha */ }
-        else { super.update(player); }
+        // --- MOVIMIENTO QUE ATRAVIESA MUROS ---
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
+        const angle = Math.atan2(dy, dx);
+        
+        // Al no usar super.update, ignora los muros
+        this.x += Math.cos(angle) * this.speed;
+        this.y += Math.sin(angle) * this.speed;
 
-        if (!this.isEnraged && this.health < this.maxHealth / 2) {
-            this.isEnraged = true;
-            this.speed *= 1.5;
-            // Podrías cambiar el sprite o aplicar un filtro si entra en modo furia
-            // this.color = '#ff00ff'; // Ya no se usa si hay sprite
-        }
-
-        if (this.isEnraged) {
-            if (++this.novaAttackTimer >= this.novaAttackRate) {
-                this.novaAttackTimer = 0;
-                for (let i = 0; i < 12; i++) {
-                    const angle = (i / 12) * 2 * Math.PI;
-                    game.projectiles.push(new Projectile(this.x, this.y, angle, this.damage, 3, 800, false, 0, 'enemy'));
-                }
-            }
-            if (++this.hookAttackTimer >= this.hookAttackRate) {
-                this.hookAttackTimer = 0;
-                soundManager.playSound('hook');
-                game.effects.push(new Hook(this, player.x, player.y));
-                player.isHooked = true;
-                player.hookTarget = this;
-                player.hookTimer = 90; // Duración del arrastre
-            }
+        // Lógica de invocar súbditos
+        if (++this.spawnTimer >= this.spawnRate) {
+            this.spawnTimer = 0;
+            this.spawnMinion();
         }
     }
+
+    spawnMinion() {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = this.radius + 20;
+        const mx = this.x + Math.cos(angle) * dist;
+        const my = this.y + Math.sin(angle) * dist;
+        // Crea una prole pequeña
+        game.enemies.push(new Enemy(mx, my, 15, '#556b2f', 50, 1.2, 5, 10, 2, 'brood', 'Prole'));
+    }
+
+    draw() {
+        if (this.sprite && this.sprite.complete && this.sprite.naturalWidth > 0) {
+            ctx.save();
+            if (this.hitFlashTimer > 0) {
+                this.hitFlashTimer--;
+                ctx.filter = 'brightness(2.5)';
+            }
+            ctx.drawImage(this.sprite,
+                          this.x - this.spriteWidth / 2,
+                          this.y - this.spriteHeight / 2,
+                          this.spriteWidth,
+                          this.spriteHeight);
+            ctx.restore();
+        } else {
+            super.draw(); 
+        }
+    }
+}
 
     // --- CAMBIO CLAVE: Método draw modificado ---
     draw() {
