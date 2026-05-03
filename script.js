@@ -1323,7 +1323,6 @@ class SniperEnemy extends Enemy {
     }
 }
 
-
 class JuggernautBoss extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type, displayName) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type, displayName);
@@ -1333,25 +1332,34 @@ class JuggernautBoss extends Enemy {
         this.hookAttackRate = 420; // 7 seconds
         this.hookAttackTimer = 120;
 
-        // --- CAMBIO: Propiedad para la imagen del sprite ---
-        this.sprite = images.juggernautBossSprite; // Referencia a la imagen cargada
-        // Ajusta estos valores al tamaño de tu imagen (el radio original era 30)
-        this.spriteWidth = 100; 
-        this.spriteHeight = 100; 
-        // --- FIN CAMBIO ---
+        // --- Propiedad para la imagen del sprite ---
+        this.sprite = images.juggernautBossSprite; 
+        
+        // Usamos el radio para que el tamaño sea proporcional siempre
+        this.spriteWidth = this.radius * 2.5; 
+        this.spriteHeight = this.radius * 2.5; 
     }
     
     update(player) {
-        if (player.isHooked) { /* No se mueve mientras engancha */ }
-        else { super.update(player); }
+        // --- LÓGICA DE MOVIMIENTO PARA ATRAVESAR MUROS ---
+        if (!player.isHooked) { 
+            // Calculamos la dirección hacia el jugador
+            const dx = player.x - this.x;
+            const dy = player.y - this.y;
+            const angle = Math.atan2(dy, dx);
+            
+            // Movemos directamente x e y ignorando colisiones de la clase padre
+            this.x += Math.cos(angle) * this.speed;
+            this.y += Math.sin(angle) * this.speed;
+        }
 
+        // Lógica de furia
         if (!this.isEnraged && this.health < this.maxHealth / 2) {
             this.isEnraged = true;
             this.speed *= 1.5;
-            // Podrías cambiar el sprite o aplicar un filtro si entra en modo furia
-            // this.color = '#ff00ff'; // Ya no se usa si hay sprite
         }
 
+        // Ataques especiales
         if (this.isEnraged) {
             if (++this.novaAttackTimer >= this.novaAttackRate) {
                 this.novaAttackTimer = 0;
@@ -1366,10 +1374,30 @@ class JuggernautBoss extends Enemy {
                 game.effects.push(new Hook(this, player.x, player.y));
                 player.isHooked = true;
                 player.hookTarget = this;
-                player.hookTimer = 90; // Duración del arrastre
+                player.hookTimer = 90; 
             }
         }
     }
+
+    draw() {
+        if (this.sprite && this.sprite.complete && this.sprite.naturalWidth > 0) {
+            ctx.save();
+            if (this.hitFlashTimer > 0) {
+                this.hitFlashTimer--;
+                ctx.filter = 'brightness(2.5)';
+            }
+            // Dibujamos con el tamaño ajustado
+            ctx.drawImage(this.sprite,
+                          this.x - this.spriteWidth / 2,
+                          this.y - this.spriteHeight / 2,
+                          this.spriteWidth,
+                          this.spriteHeight);
+            ctx.restore();
+        } else {
+            super.draw(); 
+        }
+    }
+}
 
     // --- CAMBIO CLAVE: Método draw modificado ---
     draw() {
