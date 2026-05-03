@@ -1542,7 +1542,7 @@ const enemyFactory = {
     bomber: (type) => new Enemy(0, 0, 11, 'yellow', 5, 1.5, 5, 5, 3, type),
     ice_tank: (type) => new Enemy(0, 0, 16, 'cyan', 25, 1, 2, 9, 5, type),
     broodmother_boss: (type) => new GreatBroodmotherBoss(WIDTH/2, HEIGHT/2, 35, 'darkgreen', 1500, 0.5, 5, 100, 50, type, "Reina de la Prole"),
-    juggernaut_boss: (type) => new JuggernautBoss(WIDTH / 2, HEIGHT / 2, 30, '#4b0082', 2000, 1, 5, 100, 50, type, "Rey Juggernaut"),
+    juggernaut_boss: (type) => new JuggernautBoss(WIDTH / 2, HEIGHT / 2, 40, '#4b0082', 2000, 1, 5, 100, 50, type, "Rey Juggernaut"),
     arch_caster_boss: (type) => new ArchCasterBoss(WIDTH/2, HEIGHT/2, 25, '#2980b9', 3000, 0, 4, 150, 75, type, "El Gran Hechicero")
 };
 
