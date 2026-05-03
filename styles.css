@@ -347,3 +347,30 @@
     font-weight: bold;
     font-size: 0.85em;
 }
+.partida-item {
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--menu-glow-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.partida-item:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.partida-info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.partida-fecha { font-size: 0.8em; color: #ccc; }
+.partida-hora { font-weight: bold; color: var(--menu-glow-color); }
+.partida-puntos { font-size: 1.2em; font-weight: bold; color: #fff; }
