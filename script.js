@@ -33,6 +33,7 @@ const HEIGHT = canvas.height;
 
 // --- DOM ELEMENTS ---
 const mainMenu = document.getElementById('main-menu');
+const partidasMenu = document.getElementById('partidas-menu');
 const difficultyMenu = document.getElementById('difficulty-menu');
 const gameOverScreen = document.getElementById('game-over-screen');
 const adminMenu = document.getElementById('admin-menu');
@@ -2953,3 +2954,40 @@ setInterval(autoSaveGame, 10000);
 
 // 3. ¡Extra! Guardar también cuando el usuario cierra la pestaña
 window.addEventListener('beforeunload', autoSaveGame);
+
+function abrirMenuPartidas() {
+    mainMenu.style.display = 'none';
+    partidasMenu.style.display = 'flex';
+    cargarListaPartidas();
+}
+
+function cerrarMenuPartidas() {
+    partidasMenu.style.display = 'none';
+    mainMenu.style.display = 'flex';
+}
+
+function cargarListaPartidas() {
+    const contenedor = document.getElementById('lista-partidas');
+    const historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
+
+    contenedor.innerHTML = '';
+
+    if (historial.length === 0) {
+        contenedor.innerHTML = '<p style="color:rgba(255,255,255,0.5)">No hay registros de partidas.</p>';
+        return;
+    }
+
+    // Mostramos de la más reciente a la más antigua
+    historial.slice().reverse().forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'partida-item';
+        item.innerHTML = `
+            <div class="partida-info">
+                <span class="partida-fecha">📅 ${p.fecha}</span>
+                <span class="partida-hora">🕒 ${p.hora}</span>
+            </div>
+            <div class="partida-puntos">🏆 ${p.puntos}</div>
+        `;
+        contenedor.appendChild(item);
+    });
+}
