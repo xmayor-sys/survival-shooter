@@ -303,53 +303,14 @@
 .shop-score-counter {
     display: none;
 }
-/* Estilos para la lista de partidas */
-.partida-item {
-    background: rgba(0, 255, 255, 0.05);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s;
-}
+/* ==========================================
+   ESTILOS DEL MENÚ DE PARTIDAS GUARDADAS
+   ========================================== */
 
-.partida-item:hover {
-    background: rgba(0, 255, 255, 0.15);
-    border-color: var(--menu-glow-color);
-    transform: scale(1.02);
-}
-
-.partida-info {
-    text-align: left;
-}
-
-.partida-fecha {
-    color: var(--menu-glow-color);
-    font-weight: bold;
-    display: block;
-    font-size: 0.9em;
-}
-
-.partida-hora {
-    color: #fff;
-    font-size: 0.8em;
-    opacity: 0.8;
-}
-
-.partida-puntos {
-    background: var(--menu-glow-color);
-    color: #000;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.85em;
-}
+/* Contenedor de cada fila de partida */
 .partida-item {
     background: rgba(255, 255, 255, 0.1);
-    margin: 10px 0;
+    margin: 10px auto;
     padding: 15px;
     border-radius: 8px;
     border: 1px solid var(--menu-glow-color);
@@ -358,19 +319,51 @@
     align-items: center;
     transition: 0.3s;
     cursor: pointer;
+    width: 90%; /* Para que no pegue a los bordes */
+    box-sizing: border-box;
 }
 
+/* Efecto al pasar el ratón por encima */
 .partida-item:hover {
     background: rgba(0, 255, 255, 0.2);
     transform: scale(1.02);
+    border-color: #fff;
 }
 
+/* Columna de la izquierda (Fecha, Hora, Ronda) */
 .partida-info {
     text-align: left;
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
-.partida-fecha { font-size: 0.8em; color: #ccc; }
-.partida-hora { font-weight: bold; color: var(--menu-glow-color); }
-.partida-puntos { font-size: 1.2em; font-weight: bold; color: #fff; }
+.partida-fecha { 
+    font-size: 0.85em; 
+    color: #ccc; 
+}
+
+.partida-hora { 
+    font-weight: bold; 
+    color: var(--menu-glow-color); 
+    font-size: 1.1em;
+}
+
+/* Columna de la derecha (Puntos) */
+.partida-puntos { 
+    font-size: 1.1em; 
+    font-weight: bold; 
+    color: #fff;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Scroll personalizado para la lista si hay muchas partidas */
+#lista-partidas::-webkit-scrollbar {
+    width: 8px;
+}
+#lista-partidas::-webkit-scrollbar-thumb {
+    background: var(--menu-glow-color);
+    border-radius: 4px;
+}
