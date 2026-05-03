@@ -1275,7 +1275,6 @@ class BroodmotherEnemy extends Enemy {
         }
     }
 }
-
 class SpectreEnemy extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
