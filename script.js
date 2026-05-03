@@ -30,6 +30,10 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
+// --- TRUCO GLOBAL PARA LA REINA (PASO 1) ---
+const imgReina = new Image();
+imgReina.src = 'La_reina_de_la_Prole.png';
+// ------------------------------------------
 
 // --- DOM ELEMENTS ---
 const mainMenu = document.getElementById('main-menu');
