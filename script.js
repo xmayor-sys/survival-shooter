@@ -1221,7 +1221,7 @@ class BroodmotherEnemy extends Enemy {
         
         // --- EL TRUCO DEFINITIVO: Cargarla directamente aquí ---
         this.sprite = new Image();
-        this.sprite.src = 'La_reina_de_la_prole.png';
+        this.sprite.src = 'La_reina_de_la_Prole.png';
         // --------------------------------------------------------
 
         this.spriteWidth = 120;  
