@@ -1441,6 +1441,7 @@ class GreatBroodmotherBoss extends Enemy {
         this.spawnRateElite = 600; this.spawnTimerElite = 300;
         this.isEnraged = false;
         this.stateTimer = 0;
+        this.wanderAngle = Math.random() * 2 * Math.PI;
         this.sprite = images.broodQueenSprite;
         this.spriteWidth = 120;
         this.spriteHeight = 120;
