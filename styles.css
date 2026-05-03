@@ -300,4 +300,6 @@
     text-shadow: none;
     cursor: not-allowed;
 }
-
+.shop-score-counter {
+    display: none;
+}
