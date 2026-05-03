@@ -1219,10 +1219,9 @@ class BroodmotherEnemy extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
         
-        // --- EL TRUCO DEFINITIVO: Cargarla directamente aquí ---
-        this.sprite = new Image();
-        this.sprite.src = 'La_reina_de_la_Prole.png';
-        // --------------------------------------------------------
+        // --- ARREGLADO: Usamos la imagen pre-cargada correctamente ---
+        this.sprite = images.broodQueenSprite; 
+        // -------------------------------------------------------------
 
         this.spriteWidth = 120;  
         this.spriteHeight = 120;
@@ -1233,16 +1232,15 @@ class BroodmotherEnemy extends Enemy {
 
     update(player) {
         // --- MOVIMIENTO FANTASMA (Atraviesa muros) ---
-        // Calculamos la dirección hacia el jugador
         const dx = player.x - this.x;
         const dy = player.y - this.y;
         const angle = Math.atan2(dy, dx);
         
-        // Movemos a la Reina directamente (esto ignora las colisiones de muros)
+        // Movemos a la Reina directamente
         this.x += Math.cos(angle) * this.speed;
         this.y += Math.sin(angle) * this.speed;
 
-        // Invocación de súbditos (prole)
+        // Invocación de súbditos
         if (++this.spawnTimer >= this.spawnRate) { 
             this.spawnTimer = 0; 
             spawnEnemyAt('normal', this.x, this.y); 
@@ -1251,10 +1249,9 @@ class BroodmotherEnemy extends Enemy {
 
     draw() {
         // --- DIBUJAR LA FOTO DE LA REINA ---
-        // Si la imagen cargó bien, la dibujamos
-        if (this.sprite && this.sprite.complete) {
+        // Le añadimos "this.sprite.naturalWidth > 0" por si al juego le cuesta un poco cargarla
+        if (this.sprite && (this.sprite.complete || this.sprite.naturalWidth > 0)) {
             ctx.save();
-            // Si le disparas, parpadea un poco (opcional)
             if (this.hitFlashTimer > 0) {
                 this.hitFlashTimer--;
                 ctx.filter = 'brightness(2)';
@@ -1269,7 +1266,7 @@ class BroodmotherEnemy extends Enemy {
             );
             ctx.restore();
         } else {
-            // Si la foto falla, dibuja el círculo para que no sea invisible
+            // Si hay un error, dibuja el círculo
             super.draw();
         }
     }
