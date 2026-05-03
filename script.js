@@ -1219,9 +1219,12 @@ class BroodmotherEnemy extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
         
-        // 1. Aquí conectamos la foto
-        this.sprite = images.broodQueenSprite; 
-        this.spriteWidth = 120;  // Tamaño de la imagen en pantalla
+        // --- EL TRUCO DEFINITIVO: Cargarla directamente aquí ---
+        this.sprite = new Image();
+        this.sprite.src = 'La_reina_de_la_prole.png';
+        // --------------------------------------------------------
+
+        this.spriteWidth = 120;  
         this.spriteHeight = 120;
 
         this.spawnRate = 300; 
