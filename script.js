@@ -1455,10 +1455,10 @@ class GreatBroodmotherBoss extends Enemy {
         }
         const nextX = this.x + Math.cos(this.wanderAngle) * this.speed;
         const nextY = this.y + Math.sin(this.wanderAngle) * this.speed;
-        if (!isCollidingWithObstacle(nextX, this.y, this.radius)) this.x = nextX;
-        if (!isCollidingWithObstacle(this.x, nextY, this.radius)) this.y = nextY;
-        this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
-        this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
+        this.x = nextX;
+        this.y = nextY;
+        this.x = Math.max(60, Math.min(WIDTH - 60, this.x));
+        this.y = Math.max(60, Math.min(HEIGHT - 60, this.y));
 
         if (!this.isEnraged && this.health < this.maxHealth / 2) {
             this.isEnraged = true; this.spawnRateNormal /= 2; this.spawnRateElite /= 2; this.color = '#c0392b';
