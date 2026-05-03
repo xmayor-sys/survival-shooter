@@ -39,7 +39,8 @@ const adminMenu = document.getElementById('admin-menu');
 const pauseMenu = document.getElementById('pause-menu');
 const levelUpMenu = document.getElementById('levelup-menu');
 const characterSelectMenu = document.getElementById('character-select-menu');
-const shopMenu = document.getElementById('shop-menu');   
+const shopMenu = document.getElementById('shop-menu');
+const inventoryMenu = document.getElementById('inventory-menu');    
 const rouletteMenu = document.getElementById('roulette-menu');
 const talentTreeMenu = document.getElementById('talent-tree-menu');
 const settingsMenu = document.getElementById('settings-menu');
@@ -2212,6 +2213,53 @@ function togglePause() {
         game.gamepad.menuSelectionIndex = 0;
     }
 }
+
+// --- PEGA LAS SIGUIENTES DOS FUNCIONES AQUÍ ---
+
+/**
+ * Muestra u oculta el menú de inventario.
+ * @param {boolean} show - True para mostrar, false para ocultar.
+ */
+function showInventoryMenu(show) {
+    if (show) {
+        // Oculta el menú de pausa para mostrar el de inventario
+        pauseMenu.style.display = 'none';
+        game.paused = true;
+        populateInventory();
+        inventoryMenu.style.display = 'flex';
+        game.gamepad.menuSelectionIndex = 0; // Resetea la selección del gamepad
+    } else {
+        // Oculta el inventario y vuelve a mostrar el menú de pausa
+        inventoryMenu.style.display = 'none';
+        pauseMenu.style.display = 'flex';
+        game.gamepad.menuSelectionIndex = 0; // Resetea la selección del gamepad
+    }
+}
+
+/**
+ * Rellena el grid del inventario con las mejoras actuales del jugador.
+ */
+function populateInventory() {
+    const grid = document.getElementById('inventory-grid');
+    grid.innerHTML = '';
+    const p = game.player;
+
+    let foundUpgrades = [];
+
+    // Función auxiliar para añadir al inventario
+    const addUpgradeToInventory = (name, level) => {
+        if (!name) return;
+        let levelText;
+        if (level === 'EVOLVED') {
+            levelText = `<span class="evo-text">¡EVOLUCIONADO!</span>`;
+        } else if (typeof level === 'number') {
+            levelText = `Nivel: <span class="level-text">${level}</span>`;
+        } else {
+            levelText = `<span class="level-text">Activado</span>`;
+        }
+        
+        foundUpgrades.push({ name, levelText });
+    };
 
     // 1. Mejoras de Nivel (Armas y Pasivas)
     if (p.isSummoner) {
