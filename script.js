@@ -1223,8 +1223,8 @@ class BroodmotherEnemy extends Enemy {
     constructor(x, y, radius, color, health, speed, damage, xp, coins, type) {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
         
-        // --- ARREGLADO: Usamos la imagen pre-cargada correctamente ---
-        this.sprite = images.broodQueenSprite; 
+        // --- ARREGLADO (PASO 2): Usamos la variable global imgReina ---
+        this.sprite = imgReina; 
         // -------------------------------------------------------------
 
         this.spriteWidth = 120;  
