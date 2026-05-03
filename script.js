@@ -1477,17 +1477,21 @@ class GreatBroodmotherBoss extends Enemy {
     }
 
     // ✅ draw() va AQUÍ, FUERA del update(), dentro de la clase
-    draw() {
+draw() {
         if (this.sprite && this.sprite.complete && this.sprite.naturalWidth > 0) {
             ctx.save();
             if (this.hitFlashTimer > 0) {
                 this.hitFlashTimer--;
                 ctx.filter = 'brightness(2.5)';
             }
+            ctx.translate(this.x, this.y);
+            if (Math.cos(this.wanderAngle) < 0) {
+                ctx.scale(-1, 1);
+            }
             ctx.drawImage(
                 this.sprite,
-                this.x - this.spriteWidth / 2,
-                this.y - this.spriteHeight / 2,
+                -this.spriteWidth / 2,
+                -this.spriteHeight / 2,
                 this.spriteWidth,
                 this.spriteHeight
             );
