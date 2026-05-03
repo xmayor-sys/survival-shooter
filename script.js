@@ -2930,20 +2930,25 @@ setInterval(autoSaveGame, 10000);
 window.addEventListener('beforeunload', autoSaveGame);
 
 // ==========================================
-// SISTEMA DE PARTIDAS GUARDADAS (MANUAL)
+// SISTEMA DE PARTIDAS GUARDADAS (FIXED)
 // ==========================================
+
 function abrirMenuPartidas() {
-    mainMenu.style.display = 'none';
-    partidasMenu.style.display = 'flex';
-    cargarListaPartidas();
+    // Ocultamos el menú principal y mostramos el de partidas
+    if (mainMenu) mainMenu.style.display = 'none';
+    if (partidasMenu) {
+        partidasMenu.style.display = 'flex';
+        cargarListaPartidas();
+    }
 }
 
 function cerrarMenuPartidas() {
-    partidasMenu.style.display = 'none';
-    mainMenu.style.display = 'flex';
+    if (partidasMenu) partidasMenu.style.display = 'none';
+    if (mainMenu) mainMenu.style.display = 'flex';
 }
 
 function guardarPartidaManual() {
+    // Detectamos la ronda actual correctamente
     let rondaParaGuardar = game.wave || game.currentWave || 0;
     
     const dataToSave = {
@@ -2956,23 +2961,27 @@ function guardarPartidaManual() {
     };
 
     let historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
+    
     let nuevaEntrada = {
         fecha: new Date().toLocaleDateString(),
         hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         puntos: game.highScore || 0,
-        ronda: rondaParaGuardar + 1, // Aquí corregimos lo de la ronda menos
+        ronda: rondaParaGuardar + 1, // Guardamos visualmente la ronda real
         datos: dataToSave
     };
 
     historial.push(nuevaEntrada);
-    if (historial.length > 10) historial.shift();
+    if (historial.length > 10) historial.shift(); // Máximo 10 partidas
+    
     localStorage.setItem('historial_partidas', JSON.stringify(historial));
     
-    alert("💾 ¡Partida guardada! Ronda: " + (rondaParaGuardar + 1));
+    alert("💾 ¡Partida guardada con éxito! Ronda: " + (rondaParaGuardar + 1));
 }
 
 function cargarListaPartidas() {
     const contenedor = document.getElementById('lista-partidas');
+    if (!contenedor) return;
+
     const historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
     contenedor.innerHTML = '';
 
@@ -2981,16 +2990,18 @@ function cargarListaPartidas() {
         return;
     }
 
+    // Mostramos las partidas (la más reciente primero)
     historial.slice().reverse().forEach((p, i) => {
         const indexReal = historial.length - 1 - i; 
         const item = document.createElement('div');
         item.className = 'partida-item';
         item.style.cursor = 'pointer';
         item.onclick = () => cargarPartidaManual(indexReal);
+        
         item.innerHTML = `
             <div class="partida-info">
                 <span class="partida-fecha">📅 ${p.fecha} - 🕒 ${p.hora}</span>
-                <span class="partida-hora" style="color: #00ffff;">🌊 Ronda: ${p.ronda}</span>
+                <span class="partida-hora" style="color: #00ffff; font-weight: bold;">🌊 Ronda: ${p.ronda}</span>
             </div>
             <div class="partida-puntos">🏆 ${p.puntos} pts</div>
         `;
@@ -3003,21 +3014,33 @@ function cargarPartidaManual(index) {
     let partida = historial[index];
 
     if (partida && partida.datos) {
-        // Carga de datos
+        // 1. Cargamos los datos en el objeto global del juego
         game.permanentGold = partida.datos.permanentGold;
         game.highScore = partida.datos.highScore;
         game.wave = partida.datos.wave;
         game.currentWave = partida.datos.wave;
         
-        // LIMPIEZA PARA QUE NO APAREZCA VACÍO O SIN ENEMIGOS
+        // 2. LIMPIEZA TOTAL PARA EVITAR PANTALLA VACÍA
         game.enemies = [];
         game.projectiles = [];
         game.gems = [];
-        if(game.player) game.player.health = game.player.maxHealth;
+        game.particles = []; // Limpiamos efectos visuales
+        
+        if (game.player) {
+            game.player.health = game.player.maxHealth;
+            // Opcional: poner al jugador en el centro
+            game.player.x = WIDTH / 2;
+            game.player.y = HEIGHT / 2;
+        }
 
+        // 3. ACTIVAR EL JUEGO (Esto hace que al darle a Jugar todo funcione)
+        game.active = true;
+        game.paused = false;
+
+        // Guardamos también en el slot de auto-guardado principal
         localStorage.setItem('survival_game_save', JSON.stringify(partida.datos));
         
-        alert("📂 Cargada Ronda " + (partida.datos.wave + 1) + ". ¡Dale a JUGAR!");
+        alert("📂 Cargada Ronda " + (partida.datos.wave + 1) + ".\n¡Dale a JUGAR o entra al mapa para continuar!");
         cerrarMenuPartidas();
     }
 }
