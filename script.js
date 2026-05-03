@@ -2900,63 +2900,38 @@ window.addEventListener("keydown", function(e) {
     }
 }, false);
 // ==========================================
-//   SISTEMA DE GUARDADO AUTOMÁTICO (10s)
+// SISTEMA DE GUARDADO AUTOMÁTICO (Cada 10s)
 // ==========================================
-
 function autoSaveGame() {
-    // Creamos un paquete con todo lo que queremos salvar
     const dataToSave = {
-        // Guardamos el oro (usamos las variables que detecté en tu script)
         permanentGold: game.permanentGold || 0,
         totalGold: game.totalGold || 0,
-        
-        // Guardamos récords y estadísticas
         highScore: game.highScore || 0,
         totalKills: game.stats ? game.stats.totalKills : 0,
-        
-        // Guardamos mejoras de la tienda si las tienes
         unlockedUpgrades: game.unlockedUpgrades || []
     };
-
-    // Lo metemos en el "baúl" del navegador (localStorage)
     localStorage.setItem('survival_game_save', JSON.stringify(dataToSave));
-    
-    // Un mensaje pequeño en la consola para saber que funciona (puedes borrarlo luego)
-    console.log("💾 Partida guardada automáticamente (10s)");
+    console.log("💾 Auto-guardado completado");
 }
 
 function autoLoadGame() {
     const savedRaw = localStorage.getItem('survival_game_save');
-    
     if (savedRaw) {
         const loadedData = JSON.parse(savedRaw);
-        
-        // Devolvemos los datos a sus variables correspondientes
         game.permanentGold = loadedData.permanentGold || 0;
         game.totalGold = loadedData.totalGold || 0;
         game.highScore = loadedData.highScore || 0;
-        
-        if (game.stats && loadedData.totalKills) {
-            game.stats.totalKills = loadedData.totalKills;
-        }
-
-        console.log("📂 Datos cargados: Oro =", game.permanentGold);
-    } else {
-        console.log("🆕 No hay datos previos, empezando nueva aventura.");
+        if (game.stats && loadedData.totalKills) game.stats.totalKills = loadedData.totalKills;
     }
 }
 
-// 1. Intentar cargar nada más leer el script
 autoLoadGame();
-
-// 2. Configurar el guardado cada 10 segundos (10000 milisegundos)
 setInterval(autoSaveGame, 10000);
-
-// 3. ¡Extra! Guardar también cuando el usuario cierra la pestaña
 window.addEventListener('beforeunload', autoSaveGame);
 
-// --- SISTEMA DE PARTIDAS GUARDADAS ---
-
+// ==========================================
+// SISTEMA DE PARTIDAS GUARDADAS (MANUAL)
+// ==========================================
 function abrirMenuPartidas() {
     mainMenu.style.display = 'none';
     partidasMenu.style.display = 'flex';
@@ -2969,31 +2944,31 @@ function cerrarMenuPartidas() {
 }
 
 function guardarPartidaManual() {
+    let rondaParaGuardar = game.wave || game.currentWave || 0;
+    
     const dataToSave = {
         permanentGold: game.permanentGold || 0,
         totalGold: game.totalGold || 0,
         highScore: game.highScore || 0,
         totalKills: game.stats ? game.stats.totalKills : 0,
         unlockedUpgrades: game.unlockedUpgrades || [],
-        wave: game.currentWave || game.wave || 1 // Guardamos la ronda actual
+        wave: rondaParaGuardar
     };
 
     let historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
-    
     let nuevaEntrada = {
         fecha: new Date().toLocaleDateString(),
         hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         puntos: game.highScore || 0,
-        ronda: game.currentWave || game.wave || 1, // Añadimos la ronda a la lista
+        ronda: rondaParaGuardar + 1, // Aquí corregimos lo de la ronda menos
         datos: dataToSave
     };
 
     historial.push(nuevaEntrada);
-    if (historial.length > 10) historial.shift(); // Mantiene las últimas 10
-    
+    if (historial.length > 10) historial.shift();
     localStorage.setItem('historial_partidas', JSON.stringify(historial));
     
-    alert("💾 ¡Partida guardada! Ronda: " + nuevaEntrada.ronda);
+    alert("💾 ¡Partida guardada! Ronda: " + (rondaParaGuardar + 1));
 }
 
 function cargarListaPartidas() {
@@ -3002,7 +2977,7 @@ function cargarListaPartidas() {
     contenedor.innerHTML = '';
 
     if (historial.length === 0) {
-        contenedor.innerHTML = '<p style="color:gray; text-align:center;">No hay partidas guardadas.</p>';
+        contenedor.innerHTML = '<p style="color:gray; text-align:center; padding:20px;">No hay partidas guardadas.</p>';
         return;
     }
 
@@ -3012,11 +2987,10 @@ function cargarListaPartidas() {
         item.className = 'partida-item';
         item.style.cursor = 'pointer';
         item.onclick = () => cargarPartidaManual(indexReal);
-        
         item.innerHTML = `
             <div class="partida-info">
                 <span class="partida-fecha">📅 ${p.fecha} - 🕒 ${p.hora}</span>
-                <span class="partida-hora" style="color: #ff9900;">🌊 Ronda: ${p.ronda}</span>
+                <span class="partida-hora" style="color: #00ffff;">🌊 Ronda: ${p.ronda}</span>
             </div>
             <div class="partida-puntos">🏆 ${p.puntos} pts</div>
         `;
@@ -3029,15 +3003,21 @@ function cargarPartidaManual(index) {
     let partida = historial[index];
 
     if (partida && partida.datos) {
+        // Carga de datos
         game.permanentGold = partida.datos.permanentGold;
         game.highScore = partida.datos.highScore;
-        // El juego ahora sabe en qué ronda estaba:
-        game.currentWave = partida.datos.wave; 
         game.wave = partida.datos.wave;
+        game.currentWave = partida.datos.wave;
         
+        // LIMPIEZA PARA QUE NO APAREZCA VACÍO O SIN ENEMIGOS
+        game.enemies = [];
+        game.projectiles = [];
+        game.gems = [];
+        if(game.player) game.player.health = game.player.maxHealth;
+
         localStorage.setItem('survival_game_save', JSON.stringify(partida.datos));
         
-        alert("📂 Datos cargados. ¡Dale a JUGAR para continuar desde la Ronda " + partida.datos.wave + "!");
+        alert("📂 Cargada Ronda " + (partida.datos.wave + 1) + ". ¡Dale a JUGAR!");
         cerrarMenuPartidas();
     }
 }
