@@ -1336,8 +1336,8 @@ class JuggernautBoss extends Enemy {
         // --- CAMBIO: Propiedad para la imagen del sprite ---
         this.sprite = images.juggernautBossSprite; // Referencia a la imagen cargada
         // Ajusta estos valores al tamaño de tu imagen (el radio original era 30)
-        this.spriteWidth = 60; 
-        this.spriteHeight = 60; 
+        this.spriteWidth = 2.8; 
+        this.spriteHeight = 2.8; 
         // --- FIN CAMBIO ---
     }
     
