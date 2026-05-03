@@ -33,6 +33,7 @@ const HEIGHT = canvas.height;
 
 // --- DOM ELEMENTS ---
 const mainMenu = document.getElementById('main-menu');
+const inventoryMenu = { style: { display: 'none' } };
 const difficultyMenu = document.getElementById('difficulty-menu');
 const gameOverScreen = document.getElementById('game-over-screen');
 const adminMenu = document.getElementById('admin-menu');
