@@ -77,17 +77,27 @@
         <p id="achievement-toast-text" style="margin: 5px 0 0; padding: 0;"></p>
     </div>
 
-    <div id="main-menu" class="menu-overlay" style="display: flex;">
-        <div class="menu-content">
-            <h2>SURVIVAL SHOOTER</h2>
-            <button onclick="showDifficultyMenu()">Jugar</button>
-            <button id="load-button" onclick="showTalentTree(true)">Mejoras Permanentes</button>
-            <button onclick="abrirMenuPartidas()">Partidas Guardadas</button> <button onclick="showOptionsMenu()">Opciones</button>
-            <button onclick="showAchievementsMenu(true)">Logros</button>
-            <button onclick="showSettingsMenu(true)">Configuraciones</button>
-            <a href="mailto:alain.abecia@ikasle.eus?subject=Reporte de Bug - Survival Shooter" class="menu-button">Reportar Bugs</a>
-        </div>
+   <div id="main-menu" class="menu-overlay" style="display: flex;">
+    <div class="menu-content">
+        <h2>SURVIVAL SHOOTER</h2>
+        <button onclick="showDifficultyMenu()">Jugar</button>
+        <button id="load-button" onclick="showTalentTree(true)">Mejoras Permanentes</button>
+        <button onclick="abrirMenuPartidas()">Partidas Guardadas</button> 
+        <button onclick="showOptionsMenu()">Opciones</button>
+        <button onclick="showAchievementsMenu(true)">Logros</button>
+        <button onclick="showSettingsMenu(true)">Configuraciones</button>
+        <a href="mailto:x.mayor@ikasle.eus?subject=Reporte de Bug - Survival Shooter" class="menu-button">Reportar Bugs</a>
     </div>
+</div>
+
+<div id="partidas-menu" class="menu-overlay" style="display: none;">
+    <div class="menu-content">
+        <h2>📂 PARTIDAS GUARDADAS</h2>
+        <div id="lista-partidas" style="margin-bottom: 20px; max-height: 300px; overflow-y: auto; width: 100%;">
+            </div>
+        <button onclick="cerrarMenuPartidas()">VOLVER</button>
+    </div>
+</div>
 
     <div id="achievements-menu" class="menu-overlay">
         <div class="menu-content">
