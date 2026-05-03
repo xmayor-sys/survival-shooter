@@ -98,22 +98,19 @@ function loadAsset(name, src) {
 }
 
 function preloadAssets() {
-    // Imagen del Arch Caster Boss (ya la tienes)
+    // Imagen del Arch Caster Boss
     loadAsset('archCasterBossSprite', 'jefe_final.png');
 
-    // Imagen del Proyectil del Jefe (ya la tienes)
+    // Imagen del Proyectil del Jefe
     loadAsset('bossProjectileSprite', 'bola_de_fuego.png');
 
-    // --- NUEVA LÍNEA: Imagen del Juggernaut Boss ---
+    // Imagen del Juggernaut Boss
     loadAsset('juggernautBossSprite', 'rey_juggernaut.png');
-    // ---------------------------------------------------
 
-    // Para usar tu propia imagen (ej. 'rey_juggernaut.png'):
-    // 1. Borra la línea de 'data:image...' de arriba.
-    // 2. Descomenta la línea de abajo y pon el nombre de tu archivo:
-    // loadAsset('juggernautBossSprite', 'rey_juggernaut.png');
+    // --- NUEVA LÍNEA PARA LA REINA ---
+    loadAsset('broodQueenSprite', 'reina_prole.png'); 
+    // (Asegúrate de que el archivo se llame reina_prole.png o cámbialo al nombre que tengas)
 }
-
 
 // --- GAME STATE & CONFIGURATION ---
 const game = {
