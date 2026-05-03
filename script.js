@@ -30,10 +30,6 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
-// --- TRUCO GLOBAL PARA LA REINA (PASO 1) ---
-const imgReina = new Image();
-imgReina.src = 'La_reina_de_la_Prole.png';
-// ------------
 
 // --- DOM ELEMENTS ---
 const mainMenu = document.getElementById('main-menu');
@@ -1224,7 +1220,7 @@ class BroodmotherEnemy extends Enemy {
         super(x, y, radius, color, health, speed, damage, xp, coins, type);
         
         // --- ARREGLADO (PASO 2): Usamos la variable global imgReina ---
-        this.sprite = imgReina; 
+        this.sprite = images.broodQueenSprite; 
         // -------------------------------------------------------------
 
         this.spriteWidth = 120;  
@@ -1445,7 +1441,11 @@ class GreatBroodmotherBoss extends Enemy {
         this.spawnRateElite = 600; this.spawnTimerElite = 300;
         this.isEnraged = false;
         this.stateTimer = 0;
+        this.sprite = images.broodQueenSprite;
+        this.spriteWidth = 120;
+        this.spriteHeight = 120;
     }
+
     update(player) {
         // Movimiento errante
         if(this.stateTimer-- <= 0) {
@@ -1472,6 +1472,27 @@ class GreatBroodmotherBoss extends Enemy {
         if (++this.spawnTimerElite >= this.spawnRateElite) {
             this.spawnTimerElite = 0;
             spawnEnemyAt(this.isEnraged ? 'caster' : 'elite', this.x, this.y);
+        }
+    }
+
+    // ✅ draw() va AQUÍ, FUERA del update(), dentro de la clase
+    draw() {
+        if (this.sprite && this.sprite.complete && this.sprite.naturalWidth > 0) {
+            ctx.save();
+            if (this.hitFlashTimer > 0) {
+                this.hitFlashTimer--;
+                ctx.filter = 'brightness(2.5)';
+            }
+            ctx.drawImage(
+                this.sprite,
+                this.x - this.spriteWidth / 2,
+                this.y - this.spriteHeight / 2,
+                this.spriteWidth,
+                this.spriteHeight
+            );
+            ctx.restore();
+        } else {
+            super.draw();
         }
     }
 }
