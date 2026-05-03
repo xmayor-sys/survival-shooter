@@ -2955,6 +2955,8 @@ setInterval(autoSaveGame, 10000);
 // 3. ¡Extra! Guardar también cuando el usuario cierra la pestaña
 window.addEventListener('beforeunload', autoSaveGame);
 
+// --- SISTEMA DE PARTIDAS GUARDADAS ---
+
 function abrirMenuPartidas() {
     mainMenu.style.display = 'none';
     partidasMenu.style.display = 'flex';
@@ -2966,28 +2968,76 @@ function cerrarMenuPartidas() {
     mainMenu.style.display = 'flex';
 }
 
+function guardarPartidaManual() {
+    const dataToSave = {
+        permanentGold: game.permanentGold || 0,
+        totalGold: game.totalGold || 0,
+        highScore: game.highScore || 0,
+        totalKills: game.stats ? game.stats.totalKills : 0,
+        unlockedUpgrades: game.unlockedUpgrades || [],
+        wave: game.currentWave || game.wave || 1 // Guardamos la ronda actual
+    };
+
+    let historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
+    
+    let nuevaEntrada = {
+        fecha: new Date().toLocaleDateString(),
+        hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        puntos: game.highScore || 0,
+        ronda: game.currentWave || game.wave || 1, // Añadimos la ronda a la lista
+        datos: dataToSave
+    };
+
+    historial.push(nuevaEntrada);
+    if (historial.length > 10) historial.shift(); // Mantiene las últimas 10
+    
+    localStorage.setItem('historial_partidas', JSON.stringify(historial));
+    
+    alert("💾 ¡Partida guardada! Ronda: " + nuevaEntrada.ronda);
+}
+
 function cargarListaPartidas() {
     const contenedor = document.getElementById('lista-partidas');
     const historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
-
     contenedor.innerHTML = '';
 
     if (historial.length === 0) {
-        contenedor.innerHTML = '<p style="color:rgba(255,255,255,0.5)">No hay registros de partidas.</p>';
+        contenedor.innerHTML = '<p style="color:gray; text-align:center;">No hay partidas guardadas.</p>';
         return;
     }
 
-    // Mostramos de la más reciente a la más antigua
-    historial.slice().reverse().forEach(p => {
+    historial.slice().reverse().forEach((p, i) => {
+        const indexReal = historial.length - 1 - i; 
         const item = document.createElement('div');
         item.className = 'partida-item';
+        item.style.cursor = 'pointer';
+        item.onclick = () => cargarPartidaManual(indexReal);
+        
         item.innerHTML = `
             <div class="partida-info">
-                <span class="partida-fecha">📅 ${p.fecha}</span>
-                <span class="partida-hora">🕒 ${p.hora}</span>
+                <span class="partida-fecha">📅 ${p.fecha} - 🕒 ${p.hora}</span>
+                <span class="partida-hora" style="color: #ff9900;">🌊 Ronda: ${p.ronda}</span>
             </div>
-            <div class="partida-puntos">🏆 ${p.puntos}</div>
+            <div class="partida-puntos">🏆 ${p.puntos} pts</div>
         `;
         contenedor.appendChild(item);
     });
+}
+
+function cargarPartidaManual(index) {
+    let historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
+    let partida = historial[index];
+
+    if (partida && partida.datos) {
+        game.permanentGold = partida.datos.permanentGold;
+        game.highScore = partida.datos.highScore;
+        // El juego ahora sabe en qué ronda estaba:
+        game.currentWave = partida.datos.wave; 
+        game.wave = partida.datos.wave;
+        
+        localStorage.setItem('survival_game_save', JSON.stringify(partida.datos));
+        
+        alert("📂 Datos cargados. ¡Dale a JUGAR para continuar desde la Ronda " + partida.datos.wave + "!");
+        cerrarMenuPartidas();
+    }
 }
