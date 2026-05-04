@@ -1967,6 +1967,8 @@ function showLevelUpMenu() {
 
 function selectUpgrade(upgrade) {
     upgrade.apply(game.player);
+    game.appliedUpgradeIds = game.appliedUpgradeIds || [];
+    game.appliedUpgradeIds.push(upgrade.id);
     levelUpMenu.style.display = 'none';
     game.levelUpPending = false;
 
@@ -2091,6 +2093,8 @@ function showRoulette(isLegendary) {
 function endRoulette(chosenUpgrade) {
     if (chosenUpgrade && chosenUpgrade.apply) {
         chosenUpgrade.apply(game.player);
+        game.appliedUpgradeIds = game.appliedUpgradeIds || [];
+        if (chosenUpgrade.id) game.appliedUpgradeIds.push(chosenUpgrade.id);
     }
     updateHUD();
     checkForEvolutions();
@@ -3018,28 +3022,106 @@ function guardarPartidaManual() {
     const p = game.player;
 
     const dataToSave = {
+        // Ronda y tiempo
         wave: rondaParaGuardar,
         time: game.time || 0,
         difficulty: game.difficulty || 'normal',
+
+        // Personaje
         characterId: p ? p.characterId : null,
+
+        // Nivel y XP
         level: game.level || 1,
         xp: game.xp || 0,
         xpToNextLevel: game.xpToNextLevel || 10,
+
+        // Recursos
         coins: game.coins || 0,
         permanentGold: game.permanentGold || 0,
         highScore: game.highScore || 0,
         totalKills: game.stats ? game.stats.kills : 0,
+
+        // Inventario
         bombs: p ? (p.bombs || 0) : 0,
         crossAttacks: p ? (p.crossAttacksAvailable || 0) : 0,
         chests: p ? (p.chests || 0) : 0,
         legendaryChests: p ? (p.legendaryChests || 0) : 0,
+
+        // Stats base del jugador
         health: p ? p.health : null,
         maxHealth: p ? p.maxHealth : null,
-        damage: p ? p.damage : null,
+        damage: p ? p.weaponDamage : null,
         speed: p ? p.speed : null,
-        fireRate: p ? p.fireRate : null,
-        appliedUpgrades: game.appliedUpgrades || [],
-        unlockedUpgrades: game.unlockedUpgrades || [],
+        fireRate: p ? p.weaponRate : null,
+
+        // Lista de IDs de mejoras aplicadas
+        appliedUpgradeIds: game.appliedUpgradeIds || [],
+
+        // Todas las propiedades de mejoras del jugador
+        playerUpgradeStats: p ? {
+            // Libro Real / Orbes
+            bibleLevel: p.bibleLevel || 0,
+            bibleOrbsCount: p.bibleOrbsCount || 0,
+            bibleDamage: p.bibleDamage || 0,
+            bibleSpeed: p.bibleSpeed || 0.04,
+
+            // Hacha
+            axeLevel: p.axeLevel || 0,
+            axeCount: p.axeCount || 0,
+            axeDamage: p.axeDamage || 0,
+            axeRate: p.axeRate || 120,
+
+            // Ajo / Aura
+            auraLevel: p.auraLevel || 0,
+            auraDamage: p.auraDamage || 0,
+            auraRadius: p.auraRadius || 0,
+            auraSlows: p.auraSlows || false,
+            auraHeals: p.auraHeals || false,
+
+            // Agua Bendita
+            holyWaterLevel: p.holyWaterLevel || 0,
+            holyWaterRate: p.holyWaterRate || 300,
+            holyWaterRadius: p.holyWaterRadius || 50,
+
+            // Balas perforantes
+            pierce: p.pierce || 0,
+
+            // Rayo en cadena
+            chainLightning: p.chainLightning || 0,
+
+            // Disparo múltiple
+            multishotLevel: p.multishotLevel || 0,
+
+            // Explosión radial
+            aoeLevel: p.aoeLevel || 0,
+            aoeRadius: p.aoeRadius || 0,
+            isAoE: p.isAoE || false,
+
+            // Stats de mejoras
+            celeridadLevel: p.celeridadLevel || 0,
+            vigorLevel: p.vigorLevel || 0,
+            cadenceLevel: p.cadenceLevel || 0,
+            imanLevel: p.imanLevel || 0,
+            magnetBonus: p.magnetBonus || 0,
+            weaponDamage: p.weaponDamage || 1,
+            weaponRate: p.weaponRate || 60,
+
+            // Habilidades especiales
+            hasParry: p.hasParry || false,
+            hasLaser: p.hasLaser || false,
+            hasResurrection: p.hasResurrection || false,
+            hasFourSeasons: p.hasFourSeasons || false,
+
+            // Invocador
+            minionDamage: p.minionDamage || 0,
+            minionHealth: p.minionHealth || 0,
+            maxMinions: p.maxMinions || 0,
+            summonRate: p.summonRate || 40,
+            minionAoE: p.minionAoE || 0,
+            minionSpeedBonus: p.minionSpeedBonus || 1,
+        } : null,
+
+        // Rebirth
         rebirthLevel: persistentData.rebirthLevel || 0,
     };
 
@@ -3099,41 +3181,62 @@ function cargarPartidaManual(index) {
     if (!partida || !partida.datos) return;
     const d = partida.datos;
 
+    // Ronda y tiempo
     game.wave = d.wave || 0;
     game.currentWave = d.wave || 0;
     game.time = d.time || 0;
     game.difficulty = d.difficulty || 'normal';
+
+    // Economía
     game.coins = d.coins || 0;
     game.permanentGold = d.permanentGold || 0;
     game.highScore = d.highScore || 0;
     if (game.stats) game.stats.kills = d.totalKills || 0;
+
+    // Nivel y XP
     game.level = d.level || 1;
     game.xp = d.xp || 0;
     game.xpToNextLevel = d.xpToNextLevel || 10;
-    game.appliedUpgrades = d.appliedUpgrades || [];
-    game.unlockedUpgrades = d.unlockedUpgrades || [];
+
+    // Mejoras aplicadas
+    game.appliedUpgradeIds = d.appliedUpgradeIds || [];
+
+    // Rebirth
     persistentData.rebirthLevel = d.rebirthLevel || 0;
 
+    // Jugador
     if (game.player) {
         if (d.characterId) game.player.characterId = d.characterId;
         if (d.health !== null) game.player.health = d.health;
         if (d.maxHealth !== null) game.player.maxHealth = d.maxHealth;
-        if (d.damage !== null) game.player.damage = d.damage;
+        if (d.damage !== null) game.player.weaponDamage = d.damage;
         if (d.speed !== null) game.player.speed = d.speed;
-        if (d.fireRate !== null) game.player.fireRate = d.fireRate;
+        if (d.fireRate !== null) game.player.weaponRate = d.fireRate;
+
         game.player.bombs = d.bombs || 0;
         game.player.crossAttacksAvailable = d.crossAttacks || 0;
         game.player.chests = d.chests || 0;
         game.player.legendaryChests = d.legendaryChests || 0;
+
+        // Restaurar todas las propiedades de mejoras
+        if (d.playerUpgradeStats) {
+            Object.assign(game.player, d.playerUpgradeStats);
+        }
+
         game.player.x = WIDTH / 2;
         game.player.y = HEIGHT / 2;
     }
 
+    // Limpiar entidades del mapa
     game.enemies = [];
     game.projectiles = [];
     game.gems = [];
     game.particles = [];
     game.effects = [];
+    game.mines = [];
+    game.holyWaters = [];
+
+    // Activar juego
     game.active = true;
     game.paused = false;
 
