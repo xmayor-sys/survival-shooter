@@ -4,7 +4,7 @@
       body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; position: relative; overflow: hidden; }
       canvas { border: 2px solid #333; background-color: #111; transition: transform 0.1s; }
       #gamepad-indicator { position: absolute; top: 15px; right: 15px; font-size: 2em; display: none; z-index: 110; text-shadow: 0 0 5px var(--menu-glow-color); }
-      .hud { flex-shrink: 0; align-self: flex-start; left: 15px; color: white; z-index: 50; font-size: 1.1em; text-shadow: 1px 1px 3px #000; user-select: none; background-color: rgba(0, 0, 0, 0.7); padding: 15px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); border: 1px solid #333; width: 220px; }
+      .hud { flex-shrink: 0; align-self: flex-start; left: 15px; color: white; z-index: 50; font-size: 1.1em; text-shadow: 1px 1px 3px #000; user-select: none; background-color: rgba(0, 0, 0, 0.7); padding: 15px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); border: 1px solid #333; width: 300px; }
       .stat-line { margin-bottom: 15px; }
       .bar-label { margin-bottom: 5px; font-weight: bold; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;}
       .bar-container { width: 100%; height: 22px; background-color: #222; border-radius: 5px; position: relative; overflow: hidden; border: 1px solid #555; }
