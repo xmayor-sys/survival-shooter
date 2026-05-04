@@ -2996,12 +2996,11 @@ function autoLoadGame() {
 autoLoadGame();
 setInterval(autoSaveGame, 10000);
 window.addEventListener('beforeunload', autoSaveGame);
+
 // ==========================================
 // SISTEMA DE PARTIDAS GUARDADAS (FIXED)
 // ==========================================
-
 function abrirMenuPartidas() {
-    // Ocultamos el menú principal y mostramos el de partidas
     if (mainMenu) mainMenu.style.display = 'none';
     if (partidasMenu) {
         partidasMenu.style.display = 'flex';
@@ -3019,43 +3018,28 @@ function guardarPartidaManual() {
     const p = game.player;
 
     const dataToSave = {
-        // --- Progreso de ronda ---
         wave: rondaParaGuardar,
         time: game.time || 0,
         difficulty: game.difficulty || 'normal',
-
-        // --- Personaje ---
         characterId: p ? p.characterId : null,
-
-        // --- Nivel y XP ---
         level: game.level || 1,
         xp: game.xp || 0,
         xpToNextLevel: game.xpToNextLevel || 10,
-
-        // --- Recursos ---
         coins: game.coins || 0,
         permanentGold: game.permanentGold || 0,
         highScore: game.highScore || 0,
         totalKills: game.stats ? game.stats.kills : 0,
-
-        // --- Inventario del jugador ---
         bombs: p ? (p.bombs || 0) : 0,
         crossAttacks: p ? (p.crossAttacksAvailable || 0) : 0,
         chests: p ? (p.chests || 0) : 0,
         legendaryChests: p ? (p.legendaryChests || 0) : 0,
-
-        // --- Stats del jugador ---
         health: p ? p.health : null,
         maxHealth: p ? p.maxHealth : null,
         damage: p ? p.damage : null,
         speed: p ? p.speed : null,
         fireRate: p ? p.fireRate : null,
-
-        // --- Mejoras aplicadas ---
         appliedUpgrades: game.appliedUpgrades || [],
         unlockedUpgrades: game.unlockedUpgrades || [],
-
-        // --- Rebirth ---
         rebirthLevel: persistentData.rebirthLevel || 0,
     };
 
@@ -3078,6 +3062,36 @@ function guardarPartidaManual() {
     alert("💾 ¡Partida guardada! Ronda: " + (rondaParaGuardar + 1) + " | Nivel: " + (game.level || 1));
 }
 
+function cargarListaPartidas() {
+    const contenedor = document.getElementById('lista-partidas');
+    if (!contenedor) return;
+
+    const historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
+    contenedor.innerHTML = '';
+
+    if (historial.length === 0) {
+        contenedor.innerHTML = '<p style="color:gray; text-align:center; padding:20px;">No hay partidas guardadas.</p>';
+        return;
+    }
+
+    historial.slice().reverse().forEach((p, i) => {
+        const indexReal = historial.length - 1 - i;
+        const item = document.createElement('div');
+        item.className = 'partida-item';
+        item.style.cursor = 'pointer';
+        item.onclick = () => cargarPartidaManual(indexReal);
+
+        item.innerHTML = `
+            <div class="partida-info">
+                <span class="partida-fecha">📅 ${p.fecha} - 🕒 ${p.hora}</span>
+                <span style="color: #00ffff; font-weight: bold;">🌊 Ronda: ${p.ronda} | ⭐ Nv.${p.nivel || '?'} | 👤 ${p.personaje || '?'}</span>
+            </div>
+            <div class="partida-puntos">🏆 ${p.puntos} pts</div>
+        `;
+        contenedor.appendChild(item);
+    });
+}
+
 function cargarPartidaManual(index) {
     let historial = JSON.parse(localStorage.getItem('historial_partidas')) || [];
     let partida = historial[index];
@@ -3085,31 +3099,21 @@ function cargarPartidaManual(index) {
     if (!partida || !partida.datos) return;
     const d = partida.datos;
 
-    // --- Ronda y tiempo ---
     game.wave = d.wave || 0;
     game.currentWave = d.wave || 0;
     game.time = d.time || 0;
     game.difficulty = d.difficulty || 'normal';
-
-    // --- Economía ---
     game.coins = d.coins || 0;
     game.permanentGold = d.permanentGold || 0;
     game.highScore = d.highScore || 0;
     if (game.stats) game.stats.kills = d.totalKills || 0;
-
-    // --- Nivel y XP ---
     game.level = d.level || 1;
     game.xp = d.xp || 0;
     game.xpToNextLevel = d.xpToNextLevel || 10;
-
-    // --- Mejoras ---
     game.appliedUpgrades = d.appliedUpgrades || [];
     game.unlockedUpgrades = d.unlockedUpgrades || [];
-
-    // --- Rebirth ---
     persistentData.rebirthLevel = d.rebirthLevel || 0;
 
-    // --- Jugador ---
     if (game.player) {
         if (d.characterId) game.player.characterId = d.characterId;
         if (d.health !== null) game.player.health = d.health;
@@ -3117,24 +3121,19 @@ function cargarPartidaManual(index) {
         if (d.damage !== null) game.player.damage = d.damage;
         if (d.speed !== null) game.player.speed = d.speed;
         if (d.fireRate !== null) game.player.fireRate = d.fireRate;
-
         game.player.bombs = d.bombs || 0;
         game.player.crossAttacksAvailable = d.crossAttacks || 0;
         game.player.chests = d.chests || 0;
         game.player.legendaryChests = d.legendaryChests || 0;
-
         game.player.x = WIDTH / 2;
         game.player.y = HEIGHT / 2;
     }
 
-    // --- Limpiar entidades del mapa ---
     game.enemies = [];
     game.projectiles = [];
     game.gems = [];
     game.particles = [];
     game.effects = [];
-
-    // --- Activar juego ---
     game.active = true;
     game.paused = false;
 
