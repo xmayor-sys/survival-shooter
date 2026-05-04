@@ -12,27 +12,8 @@
     FPS: 0
     </div>
 
-    <div id="game-run-container">
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-
-        <div id="in-game-shop">
-            <h3 class="shop-header">TIENDA DE PARTIDA</h3>
-            
-            <div class="shop-score-counter"><span id="shop-score-display"></span></div>
-
-            <div id="run-upgrades-container"></div>
-        </div>
-    </div>
-    <div id="gamepad-indicator">🎮</div>
-
-    <div id="boss-health-container">
-        <div id="boss-name"></div>
-        <div id="boss-health-bar">
-            <div id="boss-health-fill"></div>
-        </div>
-    </div>
    <div id="game-run-container">
-          <div class="hud">
+    <div class="hud">
         <div id="status-bars-panel">
             <div class="stat-line">
                 <div class="bar-label">❤️ SALUD</div>
@@ -66,6 +47,23 @@
             <div class="wave-line"><span>⏳ Por Salir:</span> <span id="enemies-to-spawn" class="wave-value">0</span></div>
         </div>
     </div>
+
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div id="in-game-shop">
+        <h3 class="shop-header">TIENDA DE PARTIDA</h3>
+        <div class="shop-score-counter"><span id="shop-score-display"></span></div>
+        <div id="run-upgrades-container"></div>
+    </div>
+</div>
+
+<div id="gamepad-indicator">🎮</div>
+<div id="boss-health-container">
+    <div id="boss-name"></div>
+    <div id="boss-health-bar">
+        <div id="boss-health-fill"></div>
+    </div>
+</div>
     
     <div id="buff-indicator"><span id="buff-name"></span> (<span id="buff-time"></span>)</div>
     <div id="wave-indicator"></div>
