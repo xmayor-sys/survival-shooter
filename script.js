@@ -2260,14 +2260,60 @@ function startGame(charStats) {
         upgrades[charStats.startsWith].levels[0].apply(game.player);
     }
     game.player.baseStats = { ...charStats };
-    game.player.bombs = 1; mainMenu.style.display = 'none';
-    game.running = true; game.paused = false;
-    updateRebirthButton(); 
-    updateHUD(); 
-    
-    // 👇 ¡AQUÍ VA EL PASO 1! Arrancamos la tienda lateral 👇
-    startRunShop(); 
-    
+    game.player.bombs = 1;
+    mainMenu.style.display = 'none';
+    game.running = true;
+    game.paused = false;
+
+    // --- RESTAURAR PARTIDA GUARDADA SI HAY UNA PENDIENTE ---
+    const pendiente = localStorage.getItem('partida_pendiente_de_cargar');
+    if (pendiente) {
+        localStorage.removeItem('partida_pendiente_de_cargar');
+        const d = JSON.parse(pendiente);
+        const p = game.player;
+
+        game.wave = d.wave || 0;
+        game.currentWave = d.wave || 0;
+        game.time = d.time || 0;
+        game.level = d.level || 1;
+        game.xp = d.xp || 0;
+        game.xpToNextLevel = d.xpToNextLevel || 10;
+        game.coins = d.coins || 0;
+        game.permanentGold = d.permanentGold || 0;
+        game.highScore = d.highScore || 0;
+        if (game.stats) game.stats.kills = d.totalKills || 0;
+        game.appliedUpgradeIds = d.appliedUpgradeIds || [];
+        if (persistentData) persistentData.rebirthLevel = d.rebirthLevel || 0;
+
+        if (d.health !== null) p.health = d.health;
+        if (d.maxHealth !== null) p.maxHealth = d.maxHealth;
+        if (d.damage !== null) p.weaponDamage = d.damage;
+        if (d.speed !== null) p.speed = d.speed;
+        if (d.fireRate !== null) p.weaponRate = d.fireRate;
+        p.bombs = d.bombs || 0;
+        p.crossAttacksAvailable = d.crossAttacks || 0;
+        p.chestsAvailable = d.chests || 0;
+        p.legendaryChestsAvailable = d.legendaryChests || 0;
+
+        if (d.playerUpgradeStats) {
+            Object.assign(p, d.playerUpgradeStats);
+        }
+
+        game.enemies = [];
+        game.projectiles = [];
+        game.gems = [];
+        game.particles = [];
+        game.effects = [];
+        game.mines = [];
+        game.holyWaters = [];
+
+        console.log("✅ Partida restaurada: Ronda", (d.wave + 1), "| Nivel", d.level);
+    }
+    // --- FIN RESTAURACIÓN ---
+
+    updateRebirthButton();
+    updateHUD();
+    startRunShop();
     gameLoop();
 }
 
