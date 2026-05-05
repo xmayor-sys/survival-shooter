@@ -3236,13 +3236,9 @@ function cargarPartidaManual(index) {
     game.mines = [];
     game.holyWaters = [];
 
-    // Activar juego
-    game.active = true;
-    game.paused = false;
+    // Guardar en localStorage para que startGame() lo recupere al iniciar
+    localStorage.setItem('partida_pendiente_de_cargar', JSON.stringify(d));
 
-    localStorage.setItem('survival_game_save', JSON.stringify(d));
-    updateHUD();
-
-    alert("📂 Cargada Ronda " + (d.wave + 1) + " | Nivel " + (d.level || 1) + "\n¡Dale a JUGAR para continuar!");
+    alert("📂 Partida lista. Ronda " + (d.wave + 1) + " | Nivel " + (d.level || 1) + "\n¡Pulsa JUGAR para continuar!");
     cerrarMenuPartidas();
 }
