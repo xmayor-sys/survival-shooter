@@ -2886,6 +2886,7 @@ function checkAdminCharacterSelect() {
 function resetFullProgress() {
     if (confirm("¿Estás seguro de que quieres borrar TODO tu progreso? Esta acción es irreversible y perderás tu nivel de Rebirth, talentos, logros y personajes desbloqueados.")) {
         localStorage.removeItem('survivalShooterSave');
+        localStorage.removeItem('license_accepted');
         window.location.reload();
     }
 }
