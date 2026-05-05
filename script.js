@@ -25,6 +25,151 @@ function updateFPS() {
 
     fpsDisplay.innerText = `FPS: ${fps}`;
 }
+
+// ==========================================
+// SISTEMA DE LICENCIA
+// ==========================================
+const LICENSE_TEXT = `================================================================
+                    LICENCIA DE USO EXCLUSIVO
+                    SURVIVAL SHOOTER GAME
+                    Autor: xmayor-sys
+                    Año: 2026
+================================================================
+
+AVISO IMPORTANTE: LEE ESTO ANTES DE USAR, VER O TOCAR ESTE JUEGO.
+
+----------------------------------------------------------------
+                        ¿QUÉ ES ESTO?
+----------------------------------------------------------------
+
+Este documento es un contrato legal entre tú (la persona que
+está leyendo esto) y xmayor-sys (el creador y único dueño de
+este juego). Al jugar, ver, descargar o usar este juego de
+cualquier forma, aceptas todas las reglas que se explican aquí.
+
+----------------------------------------------------------------
+                    QUIÉN ES EL DUEÑO
+----------------------------------------------------------------
+
+xmayor-sys es el creador, diseñador y propietario absoluto de
+TODO lo relacionado con Survival Shooter Game. Esto incluye:
+
+  - Todo el código fuente (HTML, CSS, JavaScript)
+  - Todas las imágenes y gráficos del juego
+  - El diseño visual y la interfaz
+  - Los personajes, enemigos y elementos del juego
+  - El nombre "Survival Shooter Game"
+  - Cualquier idea, mecánica o sistema creado para este juego
+
+La propiedad de xmayor-sys está respaldada por los commits
+registrados con fecha y hora en GitHub, que prueban de forma
+irrefutable que xmayor-sys es el autor original.
+
+----------------------------------------------------------------
+                    LO QUE SÍ PUEDES HACER
+----------------------------------------------------------------
+
+  - Jugar al juego libremente a través del link oficial
+  - Compartir el link oficial del juego con otras personas
+  - Hablar del juego en redes sociales mencionando al autor
+
+----------------------------------------------------------------
+                  LO QUE ESTÁ TOTALMENTE PROHIBIDO
+----------------------------------------------------------------
+
+  - Copiar cualquier parte del código (aunque sea una sola línea)
+  - Copiar, editar o usar cualquier imagen o gráfico del juego
+  - Crear un juego igual o parecido usando este como base
+  - Subir este juego o cualquier parte a otro sitio web
+  - Redistribuir el juego bajo otro nombre o como tuyo
+  - Modificar el juego y publicar la versión modificada
+  - Usar el nombre "Survival Shooter Game" para otro proyecto
+  - Descargar el código para usarlo en proyectos propios
+  - Vender, alquilar o sacar beneficio económico de este juego
+
+----------------------------------------------------------------
+              QUÉ PASA SI ROMPES ESTAS REGLAS
+----------------------------------------------------------------
+
+Si cualquier persona, empresa o entidad viola alguna de las
+reglas de esta licencia:
+
+  1. xmayor-sys tiene el derecho de reportar el contenido
+     copiado a GitHub mediante un DMCA Takedown, lo que obliga
+     a GitHub a eliminar el repositorio infractor.
+
+  2. xmayor-sys tiene el derecho de reportar el contenido en
+     cualquier plataforma donde aparezca para su eliminación
+     inmediata.
+
+  3. xmayor-sys se reserva el derecho de tomar acciones legales
+     contra el infractor si la situación lo requiere.
+
+  4. La ignorancia de esta licencia no exime de responsabilidad.
+     Si usas este juego, se asume que has leído y aceptado estas
+     condiciones.
+
+----------------------------------------------------------------
+                    CÓMO CONTACTAR AL AUTOR
+----------------------------------------------------------------
+
+Si deseas usar alguna parte de este juego de forma especial,
+solicita permiso antes de hacerlo. Contacta a xmayor-sys a
+través de los siguientes medios:
+
+  GitHub:  https://github.com/xmayor-sys
+  Email:   x.mayor@ikasle.eus
+  Email:   xabi.mayor22@gmail.com
+
+Sin permiso escrito del autor, cualquier uso no listado en la
+sección "LO QUE SÍ PUEDES HACER" está prohibido.
+
+----------------------------------------------------------------
+                        VALIDEZ LEGAL
+----------------------------------------------------------------
+
+Esta licencia es válida internacionalmente bajo las leyes de
+propiedad intelectual y derechos de autor. El hecho de que el
+código sea visible no otorga ningún derecho sobre él. Ver el
+código no significa poder usarlo, copiarlo ni redistribuirlo.
+
+El repositorio de GitHub con todos sus commits registrados a
+nombre de xmayor-sys actúa como prueba legal de autoría con
+fecha y hora verificable e irrefutable.
+
+Todos los derechos reservados © 2026 xmayor-sys
+
+================================================================`;
+
+function checkLicense() {
+    const accepted = localStorage.getItem('license_accepted');
+    const wall = document.getElementById('license-wall');
+    if (!accepted) {
+        document.getElementById('license-wall-text').textContent = LICENSE_TEXT;
+        wall.style.display = 'flex';
+    }
+}
+
+function acceptLicense() {
+    localStorage.setItem('license_accepted', 'true');
+    document.getElementById('license-wall').style.display = 'none';
+}
+
+function showLicenseMenu(show) {
+    const menu = document.getElementById('license-menu');
+    if (show) {
+        document.getElementById('license-menu-text').textContent = LICENSE_TEXT;
+        menu.style.display = 'flex';
+        if (mainMenu) mainMenu.style.display = 'none';
+    } else {
+        menu.style.display = 'none';
+        if (mainMenu) mainMenu.style.display = 'flex';
+    }
+}
+
+// Llamar al arrancar
+window.addEventListener('load', checkLicense);
+
 // --- CORE GAME SETUP ---
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
