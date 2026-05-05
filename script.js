@@ -156,14 +156,36 @@ function acceptLicense() {
 }
 
 function showLicenseMenu(show) {
-    const menu = document.getElementById('license-menu');
     const mainMenuEl = document.getElementById('main-menu');
+    let menu = document.getElementById('license-menu');
+
     if (show) {
-        document.getElementById('license-menu-text').textContent = LICENSE_TEXT;
-        menu.style.display = 'flex';
+        if (!menu) {
+            menu = document.createElement('div');
+            menu.id = 'license-menu';
+            menu.style.cssText = `
+                position: fixed; top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.97);
+                z-index: 99998;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            menu.innerHTML = `
+                <div style="background:#111; border:1px solid #444; border-radius:10px; padding:40px; max-width:700px; width:90%; max-height:85vh; display:flex; flex-direction:column; gap:20px;">
+                    <h2 style="color:#fff; text-align:center; font-family:'Courier New',monospace; letter-spacing:2px; margin:0;">LICENCIA DE USO — SURVIVAL SHOOTER</h2>
+                    <div style="overflow-y:auto; max-height:55vh; background:#0a0a0a; border:1px solid #333; border-radius:6px; padding:20px; font-family:'Courier New',monospace; font-size:0.82em; color:#ccc; line-height:1.7; white-space:pre-wrap; text-align:left;">${LICENSE_TEXT}</div>
+                    <button onclick="showLicenseMenu(false)" style="background:transparent; color:#fff; font-family:'Courier New',monospace; font-size:1em; padding:12px 30px; border:1px solid #555; border-radius:6px; cursor:pointer;">VOLVER AL MENÚ</button>
+                </div>
+            `;
+            document.body.appendChild(menu);
+        } else {
+            menu.style.display = 'flex';
+        }
         if (mainMenuEl) mainMenuEl.style.display = 'none';
     } else {
-        menu.style.display = 'none';
+        if (menu) menu.style.display = 'none';
         if (mainMenuEl) mainMenuEl.style.display = 'flex';
     }
 }
