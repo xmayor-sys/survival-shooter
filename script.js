@@ -157,13 +157,14 @@ function acceptLicense() {
 
 function showLicenseMenu(show) {
     const menu = document.getElementById('license-menu');
+    const mainMenuEl = document.getElementById('main-menu');
     if (show) {
         document.getElementById('license-menu-text').textContent = LICENSE_TEXT;
         menu.style.display = 'flex';
-        if (mainMenu) mainMenu.style.display = 'none';
+        if (mainMenuEl) mainMenuEl.style.display = 'none';
     } else {
         menu.style.display = 'none';
-        if (mainMenu) mainMenu.style.display = 'flex';
+        if (mainMenuEl) mainMenuEl.style.display = 'flex';
     }
 }
 
