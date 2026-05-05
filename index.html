@@ -243,6 +243,108 @@
         <button onclick="cerrarMenuPartidas()" style="margin-top: 10px;">Volver al Inicio</button>
     </div>
 </div>
+    <!-- POP-UP LICENCIA OBLIGATORIO (primera vez) -->
+<div id="license-wall" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.97);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+">
+    <div style="
+        background: #111;
+        border: 1px solid #444;
+        border-radius: 10px;
+        padding: 40px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    ">
+        <h2 style="color: #fff; text-align: center; font-family: 'Courier New', monospace; letter-spacing: 2px; margin: 0;">
+            AVISO LEGAL — LICENCIA DE USO
+        </h2>
+        <p style="color: #aaa; text-align: center; font-family: 'Courier New', monospace; font-size: 0.85em; margin: 0;">
+            Debes leer y aceptar los siguientes términos antes de acceder al juego.<br>
+            Podrás consultar esta licencia en cualquier momento desde el menú principal.
+        </p>
+        <div id="license-wall-text" style="
+            overflow-y: auto;
+            flex: 1;
+            max-height: 50vh;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82em;
+            color: #ccc;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        "></div>
+        <button onclick="acceptLicense()" style="
+            background: #fff;
+            color: #000;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            letter-spacing: 1px;
+        ">HE LEÍDO Y ACEPTO LA LICENCIA</button>
+    </div>
+</div>
+
+<!-- MENÚ LICENCIA (consultable desde el menú) -->
+<div id="license-menu" class="menu-overlay" style="display: none;">
+    <div style="
+        background: #111;
+        border: 1px solid #444;
+        border-radius: 10px;
+        padding: 40px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    ">
+        <h2 style="color: #fff; text-align: center; font-family: 'Courier New', monospace; letter-spacing: 2px; margin: 0;">
+            LICENCIA DE USO — SURVIVAL SHOOTER
+        </h2>
+        <div id="license-menu-text" style="
+            overflow-y: auto;
+            flex: 1;
+            max-height: 60vh;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82em;
+            color: #ccc;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        "></div>
+        <button onclick="showLicenseMenu(false)" style="
+            background: transparent;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            padding: 12px 30px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+        ">VOLVER AL MENÚ</button>
+    </div>
+</div>
     
 </body>
 </html>
