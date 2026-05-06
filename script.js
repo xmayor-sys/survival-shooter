@@ -1098,11 +1098,38 @@ class Player extends Entity {
         }
     }
 
-    placeMine() { if (this.bombs > 0) { game.mines.push(new Mine(this.x, this.y)); this.bombs--; updateHUD(); } }
-    useCrossAttack() { if (this.crossAttacksAvailable > 0) { game.explosions.push(new Explosion(this.x, this.y, 50, 0, 'cross')); this.crossAttacksAvailable--; updateHUD(); } }
-    useChest() { if (this.chestsAvailable > 0 && !game.chestRoulettePending) { this.chestsAvailable--; updateHUD(); showRoulette(false); } }
-    useLegendaryChest() { if (this.legendaryChestsAvailable > 0 && !game.chestRoulettePending) { this.legendaryChestsAvailable--; updateHUD(); showRoulette(true); } }
-
+    placeMine() {
+        if (this.bombs > 0 && !(this.bombCooldown > 0)) {
+            game.mines.push(new Mine(this.x, this.y));
+            this.bombs--;
+            this.bombCooldown = 600; // 10 segundos a 60fps
+            updateHUD();
+        }
+    }
+    useCrossAttack() {
+        if (this.crossAttacksAvailable > 0 && !(this.crossCooldown > 0)) {
+            game.explosions.push(new Explosion(this.x, this.y, 50, 0, 'cross'));
+            this.crossAttacksAvailable--;
+            this.crossCooldown = 180; // 3 segundos a 60fps
+            updateHUD();
+        }
+    }
+    useChest() {
+        if (this.chestsAvailable > 0 && !game.chestRoulettePending && !(this.chestCooldown > 0)) {
+            this.chestsAvailable--;
+            this.chestCooldown = 1800; // 30 segundos a 60fps
+            updateHUD();
+            showRoulette(false);
+        }
+    }
+    useLegendaryChest() {
+        if (this.legendaryChestsAvailable > 0 && !game.chestRoulettePending && !(this.chestCooldown > 0)) {
+            this.legendaryChestsAvailable--;
+            this.chestCooldown = 1800; // 30 segundos a 60fps
+            updateHUD();
+            showRoulette(true);
+        }
+    }
     takeDamage(damage) {
         if (this.invincibilityTimer > 0) return;
         soundManager.playSound('playerHurt');
