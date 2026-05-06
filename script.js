@@ -2116,7 +2116,7 @@ function onEnemyKilled(enemy) {
         game.chests.push(new Chest(enemy.x, enemy.y, true));
         triggerScreenShake(15);
     }
-    else if (Math.random() < 0.02 * (game.player.luck || 1)) {
+    else if (Math.random() < 0.008 * (game.player.luck || 1)) {
         game.chests.push(new Chest(enemy.x, enemy.y));
     }
 }
