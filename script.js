@@ -1184,7 +1184,7 @@ class Player extends Entity {
         });
     }
     updateHolyWater() {
-        if (++this.holyWaterTimer >= 1800) {
+        if (++this.holyWaterTimer >= Math.max(1800, this.holyWaterRate)) {
             this.holyWaterTimer = 0;
             let spawnX = this.x + (Math.random() - 0.5) * 200;
             let spawnY = this.y + (Math.random() - 0.5) * 200;
