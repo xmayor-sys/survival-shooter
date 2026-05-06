@@ -1530,7 +1530,9 @@ class SniperEnemy extends Enemy {
             const moveY = (dx / dist) * this.speed * 0.5;
             if (!isCollidingWithObstacle(this.x + moveX, this.y, this.radius)) this.x += moveX;
             if (!isCollidingWithObstacle(this.x, this.y + moveY, this.radius)) this.y += moveY;
-
+            this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
+            this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
+            
             if (this.stateTimer <= 0) {
                 this.state = 'aiming';
                 this.stateTimer = 60; // 1 segundo para apuntar
