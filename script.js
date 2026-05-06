@@ -1191,7 +1191,7 @@ class Player extends Entity {
             if(this.holyWaterLevel === 'EVOLVED') {
                 spawnX = this.x; spawnY = this.y;
             }
-            game.holyWaters.push(new HolyWater(spawnX, spawnY, this.holyWaterRadius));
+            game.holyWaters.push(new HolyWater(spawnX, spawnY, Math.min(this.holyWaterRadius, 40)));
         }
     }
     updateAxe() {
