@@ -970,7 +970,7 @@ class Mine extends Entity {
 }
 
 class HolyWater extends Entity {
-    constructor(x,y, radius) { super(x, y, radius, 'rgba(135, 206, 250, 0.2)'); this.duration = 300; this.damage = 1; this.hitTimer = 0; }
+    constructor(x,y, radius) { super(x, y, Math.min(radius, 40), 'rgba(135, 206, 250, 0.2)'); this.duration = 900; this.damage = 1; this.hitTimer = 0; }
     update() { if(--this.duration <= 0) this.alive = false; this.hitTimer++; for (let enemy of game.enemies) { if (Math.hypot(this.x - enemy.x, this.y - enemy.y) < this.radius + enemy.radius) { if (this.hitTimer % 60 === 0) enemy.takeDamage(this.damage * game.player.passiveBonus); } } }
 }
 
