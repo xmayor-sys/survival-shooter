@@ -1003,6 +1003,9 @@ class Player extends Entity {
             }
         }
         if (++this.weaponTimer >= this.weaponRate) this.attack(game.enemies);
+        if (this.bombCooldown > 0) this.bombCooldown--;
+        if (this.crossCooldown > 0) this.crossCooldown--;
+        if (this.chestCooldown > 0) this.chestCooldown--;
         if (this.healthRegen > 0 && this.health < this.maxHealth) { this.health = Math.min(this.maxHealth, this.health + this.healthRegen / 60); updateHUD(); }
 
         // Habilidades pasivas
