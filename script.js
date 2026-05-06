@@ -1316,6 +1316,8 @@ class Enemy extends Entity {
 
                 if (!isCollidingWithObstacle(finalX, this.y, this.radius)) this.x = finalX;
                 if (!isCollidingWithObstacle(this.x, finalY, this.radius)) this.y = finalY;
+                this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
+                this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
             }
         }
     }
