@@ -506,7 +506,7 @@ const summonerUpgrades = {
 // --- FIN MEJORAS INVOCADOR ---
 
 const evolutions = {
-    SANTUARIO: { name: "Santuario (Evolución)", apply: (p) => { p.holyWaterLevel = 'EVOLVED'; p.holyWaterRate = 30; p.holyWaterRadius = 250; } },
+    SANTUARIO: { name: "Santuario (Evolución)", apply: (p) => { p.holyWaterLevel = 'EVOLVED'; p.holyWaterRate = 30; p.holyWaterRadius = Math.round(p.holyWaterRadius * 1.10); } },
     CIRCULO_PERPETUO: { name: "Círculo Perpetuo (Evolución)", apply: (p) => { p.bibleLevel = 'EVOLVED'; p.bibleSpeed *= 2; p.bibleDamage *= 2; } },
     ALMA_DE_AJO: { name: "Alma de Ajo (Evolución)", apply: (p) => { p.auraLevel = 'EVOLVED'; p.auraSlows = true; p.auraHeals = true; } },
     TORMENTA_FILAMENTOS: { name: "Torm. Filamentos (Evolución)", apply: (p) => { p.chainLightning = 'EVOLVED'; } },
@@ -970,7 +970,7 @@ class Mine extends Entity {
 }
 
 class HolyWater extends Entity {
-    constructor(x,y, radius) { super(x, y, Math.min(radius, 40), 'rgba(135, 206, 250, 0.2)'); this.duration = 900; this.damage = 1; this.hitTimer = 0; }
+    constructor(x,y, radius) { super(x, y, radius, 'rgba(135, 206, 250, 0.2)'); this.duration = 900; this.damage = 1; this.hitTimer = 0; }
     update() { if(--this.duration <= 0) this.alive = false; this.hitTimer++; for (let enemy of game.enemies) { if (Math.hypot(this.x - enemy.x, this.y - enemy.y) < this.radius + enemy.radius) { if (this.hitTimer % 60 === 0) enemy.takeDamage(this.damage * game.player.passiveBonus); } } }
 }
 
@@ -1191,7 +1191,7 @@ class Player extends Entity {
             if(this.holyWaterLevel === 'EVOLVED') {
                 spawnX = this.x; spawnY = this.y;
             }
-            game.holyWaters.push(new HolyWater(spawnX, spawnY, Math.min(this.holyWaterRadius, 40)));
+            game.holyWaters.push(new HolyWater(spawnX, spawnY, this.holyWaterRadius));
         }
     }
     updateAxe() {
