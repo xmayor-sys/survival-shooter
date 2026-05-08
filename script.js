@@ -2035,6 +2035,28 @@ function draw() {
     ['mines', 'holyWaters', 'gems', 'chests', 'enemies', 'projectiles', 'explosions', 'effects', 'minions'].forEach(key => game[key].forEach(e => e.draw()));
 
     if(game.screenShake > 0) ctx.restore();
+
+    if(game.player) {
+        const p = game.player;
+        let items = [];
+        if(p.bombCooldown > 0) items.push(`💣 ${Math.ceil(p.bombCooldown / 60)}s`);
+        if(p.crossCooldown > 0) items.push(`💥 ${Math.ceil(p.crossCooldown / 60)}s`);
+        if(p.chestCooldown > 0) items.push(`🎁 ${Math.ceil(p.chestCooldown / 60)}s`);
+        if(items.length > 0) {
+            ctx.save();
+            ctx.font = 'bold 14px Courier New';
+            ctx.textAlign = 'left';
+            items.forEach((text, i) => {
+                const x = 10;
+                const y = 20 + i * 22;
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(x - 4, y - 14, 90, 18);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, x, y);
+            });
+            ctx.restore();
+        }
+    }
 }
 
 function gameLoop() {
