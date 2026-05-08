@@ -1141,7 +1141,7 @@ class Player extends Entity {
         if (this.health <= 0) {
             this.health = 0;
             if (this.hasResurrection) {
-                this.hasResurrection = false; this.health = this.maxHealth / 2;
+                this.health = this.maxHealth / 2;
                 game.explosions.push(new Explosion(this.x, this.y, 100, 200, 'radial'));
             } else { gameOver(); }
         }
@@ -1313,8 +1313,8 @@ class Enemy extends Entity {
                 const finalX = this.x + (finalMoveX / finalMag) * currentSpeed;
                 const finalY = this.y + (finalMoveY / finalMag) * currentSpeed;
 
-                if (!isCollidingWithObstacle(finalX, this.y, this.radius)) this.x = finalX;
-                if (!isCollidingWithObstacle(this.x, finalY, this.radius)) this.y = finalY;
+                this.x = finalX;
+                this.y = finalY;
                 this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
                 this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
             }
@@ -1527,8 +1527,8 @@ class SniperEnemy extends Enemy {
             // Moverse perpendicular al target para "strafe"
             const moveX = -(dy / dist) * this.speed * 0.5;
             const moveY = (dx / dist) * this.speed * 0.5;
-            if (!isCollidingWithObstacle(this.x + moveX, this.y, this.radius)) this.x += moveX;
-            if (!isCollidingWithObstacle(this.x, this.y + moveY, this.radius)) this.y += moveY;
+            this.x += moveX;
+            this.y += moveY;
             this.x = Math.max(this.radius, Math.min(WIDTH - this.radius, this.x));
             this.y = Math.max(this.radius, Math.min(HEIGHT - this.radius, this.y));
             
