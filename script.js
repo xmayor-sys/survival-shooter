@@ -524,7 +524,6 @@ const talentTree = {
     'start_hp': { name: "Vida Inicial", desc: "Aumenta la vida máxima inicial en 1.", maxLevel: 5, cost: (level) => level + 1, apply: (p, level) => p.maxHealth += level, requires: null },
     'start_dmg': { name: "Daño Inicial", desc: "Aumenta el daño base en 0.2.", maxLevel: 5, cost: (level) => level + 1, apply: (p, level) => p.weaponDamage += level * 0.2, requires: null },
     'start_spd': { name: "Velocidad Inicial", desc: "Aumenta la velocidad de movimiento en 0.1.", maxLevel: 5, cost: (level) => level + 1, apply: (p, level) => p.speed += level * 0.1, requires: null },
-    'luck': { name: "Suerte", desc: "Aumenta la probabilidad de encontrar cofres un 10% (relativo).", maxLevel: 5, cost: (level) => level + 1, apply: (p, level) => p.luck = (p.luck || 1) * (1 + level * 0.1), requires: null },
     'greed': { name: "Avaricia", desc: "Gana un 5% más de monedas.", maxLevel: 10, cost: () => 1, apply: (p, level) => p.coinMultiplier = (p.coinMultiplier || 1) + 0.05 * level, requires: 'start_dmg' },
     'wisdom': { name: "Sabiduría", desc: "Gana un 5% más de experiencia.", maxLevel: 10, cost: () => 1, apply: (p, level) => p.xpMultiplier = (p.xpMultiplier || 1) + 0.05 * level, requires: 'start_hp' },
     'regen': { name: "Regeneración", desc: "Regenera 0.1 de vida por segundo.", maxLevel: 3, cost: (level) => 2 + level, apply: (p, level) => p.healthRegen = (p.healthRegen || 0) + 0.1 * level, requires: 'wisdom' },
