@@ -2398,13 +2398,15 @@ function updateWave() {
 }
 
 // --- GAME STATE & MENU CONTROLS ---
-
 function showDifficultyMenu() {
     soundManager.init();
     mainMenu.style.display = 'none';
-    difficultyMenu.style.display = 'flex';
+    difficultyMenu._fromPlay = true;
+    talentTreeMenu.style.display = 'flex';
+    populateTalentTree();
     game.gamepad.menuSelectionIndex = 0;
 }
+
 function setDifficulty(diff) { game.difficulty = diff; difficultyMenu.style.display = 'none'; showCharacterSelectMenu(); }
 function showCharacterSelectMenu() {
     characterSelectMenu.style.display = 'flex';
@@ -2768,7 +2770,12 @@ function showTalentTree(show) {
         populateTalentTree();
     } else {
         talentTreeMenu.style.display = 'none';
-        mainMenu.style.display = 'flex';
+        if (difficultyMenu._fromPlay) {
+            difficultyMenu._fromPlay = false;
+            difficultyMenu.style.display = 'flex';
+        } else {
+            mainMenu.style.display = 'flex';
+        }
     }
 }
 
