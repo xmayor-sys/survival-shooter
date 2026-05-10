@@ -117,46 +117,53 @@
         </div>
     </div>
 
-    <div id="settings-menu" class="menu-overlay">
-        <div class="menu-content">
-            <h2>CONFIGURACIONES</h2>
-            <div class="settings-option">
-                <span>Mostrar Barras de Vida</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="setting-health-bars" onchange="toggleSetting('showEnemyHealthBars')">
-                    <span class="slider"></span>
-                </label>
-            </div>
-             <div class="settings-option">
-                <span>Mostrar Números de Daño</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="setting-damage-numbers" onchange="toggleSetting('showDamageNumbers')">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="settings-option">
-                <span>Efecto "Screen Shake"</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="setting-screen-shake" onchange="toggleSetting('enableScreenShake')">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <hr style="border-color: #555; width: 80%; margin: 20px auto;">
-            <div class="settings-option">
-                <span>Color del Menú</span>
-                <div id="color-swatches">
-                    <div class="color-swatch" style="background-color: #00ffff;" onclick="changeMenuColor('#00ffff')"></div>
-                    <div class="color-swatch" style="background-color: #4dff4d;" onclick="changeMenuColor('#4dff4d')"></div>
-                    <div class="color-swatch" style="background-color: #ff4081;" onclick="changeMenuColor('#ff4081')"></div>
-                    <div class="color-swatch" style="background-color: #ffaa00;" onclick="changeMenuColor('#ffaa00')"></div>
-                    <div class="color-swatch" style="background-color: #ffffff;" onclick="changeMenuColor('#ffffff')"></div>
-                </div>
-            </div>
-            <hr style="border-color: #555; width: 80%; margin: 20px auto;">
-            <button onclick="resetFullProgress()" style="background-color: #c0392b; color: white;">Reiniciar Progreso Total</button>
-            <button onclick="showSettingsMenu(false)">Volver al Menú</button>
+   <div id="settings-menu" class="menu-overlay">
+    <div class="menu-content">
+        <h2>CONFIGURACIONES</h2>
+        <div class="settings-option">
+            <span>Mostrar Barras de Vida</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="setting-health-bars" onchange="toggleSetting('showEnemyHealthBars')">
+                <span class="slider"></span>
+            </label>
         </div>
+        <div class="settings-option">
+            <span>Mostrar Números de Daño</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="setting-damage-numbers" onchange="toggleSetting('showDamageNumbers')">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <span>Efecto "Screen Shake"</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="setting-screen-shake" onchange="toggleSetting('enableScreenShake')">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <span>Mostrar FPS</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="setting-fps" onchange="toggleSetting('showFPS')">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <hr style="border-color: #555; width: 80%; margin: 20px auto;">
+        <div class="settings-option">
+            <span>Color del Menú</span>
+            <div id="color-swatches">
+                <div class="color-swatch" style="background-color: #00ffff;" onclick="changeMenuColor('#00ffff')"></div>
+                <div class="color-swatch" style="background-color: #4dff4d;" onclick="changeMenuColor('#4dff4d')"></div>
+                <div class="color-swatch" style="background-color: #ff4081;" onclick="changeMenuColor('#ff4081')"></div>
+                <div class="color-swatch" style="background-color: #ffaa00;" onclick="changeMenuColor('#ffaa00')"></div>
+                <div class="color-swatch" style="background-color: #ffffff;" onclick="changeMenuColor('#ffffff')"></div>
+            </div>
+        </div>
+        <hr style="border-color: #555; width: 80%; margin: 20px auto;">
+        <button onclick="resetFullProgress()" style="background-color: #c0392b; color: white;">Reiniciar Progreso Total</button>
+        <button onclick="showSettingsMenu(false)">Volver al Menú</button>
     </div>
+</div>
 
     <div id="difficulty-menu" class="menu-overlay">
         <div class="menu-content">
