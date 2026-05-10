@@ -306,6 +306,7 @@ const settings = {
     showEnemyHealthBars: true,
     showDamageNumbers: true,
     enableScreenShake: true,
+    showFPS: true,
     menuColor: '#00ffff',
 };
 
