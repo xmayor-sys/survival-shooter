@@ -2835,7 +2835,6 @@ function saveProgress() {
         persistentData.settings = { ...settings };
         localStorage.setItem('survivalShooterSave', JSON.stringify(persistentData));
         console.log("Progreso guardado.");
-        document.getElementById('load-button').textContent = `Mejoras (R-Nivel ${persistentData.rebirthLevel})`;
     } catch (e) {
         console.error("No se pudo guardar el progreso.", e);
     }
@@ -2859,7 +2858,6 @@ function loadProgress() {
         console.error("No se pudo cargar el progreso.", e);
     }
     document.getElementById('load-button').textContent = `Mejoras (R-Nivel ${persistentData.rebirthLevel})`;
-    document.getElementById('setting-health-bars').checked = settings.showEnemyHealthBars;
     document.getElementById('setting-damage-numbers').checked = settings.showDamageNumbers;
     document.getElementById('setting-screen-shake').checked = settings.enableScreenShake;
     document.getElementById('setting-fps').checked = settings.showFPS;
