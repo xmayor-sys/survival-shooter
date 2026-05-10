@@ -315,7 +315,6 @@ const persistentData = {
     talentPoints: 0,
     talents: {},
     settings: {
-        settings: {
         showEnemyHealthBars: true,
         showDamageNumbers: true,
         enableScreenShake: true,
