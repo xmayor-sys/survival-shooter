@@ -315,9 +315,11 @@ const persistentData = {
     talentPoints: 0,
     talents: {},
     settings: {
+        settings: {
         showEnemyHealthBars: true,
         showDamageNumbers: true,
         enableScreenShake: true,
+        showFPS: true,
         menuColor: '#00ffff',
     },
     achievements: {},
@@ -2854,6 +2856,8 @@ function loadProgress() {
     document.getElementById('setting-health-bars').checked = settings.showEnemyHealthBars;
     document.getElementById('setting-damage-numbers').checked = settings.showDamageNumbers;
     document.getElementById('setting-screen-shake').checked = settings.enableScreenShake;
+    document.getElementById('setting-fps').checked = settings.showFPS;
+    document.getElementById('fpsCounter').style.display = settings.showFPS ? 'block' : 'none';
     changeMenuColor(settings.menuColor, false);
 }
 
@@ -2871,6 +2875,9 @@ function showSettingsMenu(show) {
 
 function toggleSetting(settingName) {
     settings[settingName] = !settings[settingName];
+    if (settingName === 'showFPS') {
+        document.getElementById('fpsCounter').style.display = settings.showFPS ? 'block' : 'none';
+    }
     saveProgress();
 }
 
